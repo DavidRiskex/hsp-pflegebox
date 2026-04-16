@@ -46,8 +46,9 @@ export default function RootLayout({
           {children}
         </main>
 
-        <footer className="w-full bg-slate-950 text-slate-400 py-16 px-8 mt-20">
-          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12">
+        <footer className="w-full bg-[#0d2d23] text-white/70 py-16 px-8 mt-20 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-primary/30 via-transparent to-transparent pointer-events-none" />
+          <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 relative z-10">
             
             {/* Column 1: Brand */}
             <div>
@@ -74,16 +75,16 @@ export default function RootLayout({
             <div>
               <h3 className="text-white font-bold text-xl mb-6 font-headline">Kontakt</h3>
               <div className="space-y-6">
-                <div className="flex gap-4">
-                  <span className="material-symbols-outlined text-rose-500">location_on</span>
+                <div className="flex gap-4 group">
+                  <span className="material-symbols-outlined text-[#a6f2d5] transition-transform group-hover:scale-110">location_on</span>
                   <div className="leading-tight">
                     <p className="text-white font-medium">HSP Pflegeshop GmbH</p>
                     <p>Oldesloer Straße 63</p>
                     <p>22457 Hamburg</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-4">
-                  <span className="material-symbols-outlined text-rose-500">call</span>
+                <div className="flex items-center gap-4 group">
+                  <span className="material-symbols-outlined text-[#a6f2d5] transition-transform group-hover:scale-110">call</span>
                   <p className="text-white">04101/696 10 90</p>
                 </div>
                 <div className="flex items-center gap-4">
@@ -95,7 +96,7 @@ export default function RootLayout({
 
           </div>
           
-          <div className="max-w-7xl mx-auto border-t border-slate-800 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm opacity-60">
+          <div className="max-w-7xl mx-auto border-t border-white/10 mt-16 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm opacity-60 relative z-10">
             <p>© 2024 HSP Pflegeshop. Alle Rechte vorbehalten.</p>
             <p>Premium Care Excellence</p>
           </div>
