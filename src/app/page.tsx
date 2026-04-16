@@ -188,6 +188,93 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── EINFACH. SICHER. KOSTENLOS. ── */}
+      <section className="py-28 px-8 bg-on-surface relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/15 via-transparent to-transparent pointer-events-none" />
+        <div className="max-w-4xl mx-auto relative z-10 text-center">
+          <h2 className="text-4xl lg:text-6xl font-extrabold text-surface mb-6 font-headline tracking-tight">
+            Einfach. Sicher. Kostenlos.
+          </h2>
+          <p className="text-surface/70 text-xl leading-relaxed mb-16 max-w-2xl mx-auto">
+            Wir freuen uns, Ihnen unsere Pflegebox vorzustellen. Sie erhalten hochwertige Pflegehilfsmittel im Wert von bis zu{" "}
+            <span className="text-primary font-bold">42 Euro pro Monat</span>.
+          </p>
+
+          <div className="grid md:grid-cols-2 gap-5 text-left mb-12">
+            {[
+              {
+                icon: "✨",
+                title: "Maßgeschneidert",
+                body: "Jeder Mensch hat einzigartige Anforderungen. Deshalb passen wir Ihre Box exakt an Ihre Bedürfnisse an. Ob Alltagshilfe oder spezielle Pflege – wir haben die Lösung.",
+              },
+              {
+                icon: "📦",
+                title: "Kostenfreier Versand mit DHL",
+                body: "Der Versand erfolgt völlig kostenfrei und diskret. Konzentrieren Sie sich entspannt auf die Auswahl der Produkte, ohne Sorge vor versteckten Kosten.",
+              },
+            ].map((item) => (
+              <div key={item.title} className="bg-white/5 border border-white/10 rounded-[1.5rem] p-8 hover:bg-white/10 transition-colors">
+                <span className="text-3xl mb-5 block">{item.icon}</span>
+                <h3 className="text-surface font-bold text-xl mb-3 font-headline">{item.title}</h3>
+                <p className="text-surface/60 leading-relaxed">{item.body}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="bg-white/8 border border-white/15 rounded-2xl px-8 py-6">
+            <p className="text-surface font-bold text-lg leading-relaxed">
+              Nutzen Sie noch heute Ihren gesetzlichen Anspruch und erleben Sie, wie einfach erstklassige Unterstützung sein kann.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ── IHRE VORTEILE AUF EINEN BLICK ── */}
+      <section className="py-28 px-8 bg-slate-950 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent pointer-events-none" />
+        <div className="max-w-5xl mx-auto relative z-10 text-center">
+          <h2 className="text-4xl lg:text-5xl font-extrabold text-surface mb-6 font-headline tracking-tight">
+            Ihre Vorteile auf einen <span className="text-primary italic">Blick</span>
+          </h2>
+          <p className="text-surface/60 text-lg leading-relaxed mb-4 max-w-3xl mx-auto">
+            Wir machen es Ihnen leicht, die passenden Pflegehilfsmittel zu finden. Unsere{" "}
+            <span className="text-primary font-semibold">persönliche Telefonberatung</span> hilft Ihnen, die richtige Wahl zu treffen. Sie erhalten hochwertige, geprüfte Produkte und einen umfassenden Service, der Ihnen Zeit und Mühe spart.
+          </p>
+          <p className="text-surface/40 font-bold uppercase tracking-widest text-sm mb-12">Was Sie von uns erwarten können:</p>
+
+          <div className="grid md:grid-cols-2 gap-5 text-left">
+            {[
+              {
+                icon: "📞",
+                title: "Individuelle Telefonberatung",
+                body: "Wir finden gemeinsam die besten Lösungen für Ihre Bedürfnisse. Persönlich, kompetent und verständlich.",
+              },
+              {
+                icon: "🛡️",
+                title: "Geprüfte Qualität",
+                body: "Verlassen Sie sich auf hochwertige Markenprodukte von HARTMANN, die strengen Qualitätsstandards entsprechen.",
+              },
+              {
+                icon: "💛",
+                title: "Rundum-Sorglos-Service",
+                body: "Wir kümmern uns um alles – von der Beantragung bei der Kasse bis zur pünktlichen Lieferung an Ihre Haustür.",
+              },
+              {
+                icon: "🕐",
+                title: "Zuverlässige Erreichbarkeit",
+                body: "Wir sind für Sie da, wann immer Sie uns brauchen. Kurze Wartezeiten und direkte Ansprechpartner.",
+              },
+            ].map((item) => (
+              <div key={item.title} className="bg-white/5 border border-white/10 rounded-[1.5rem] p-8 hover:bg-white/8 hover:border-primary/20 transition-all group">
+                <span className="text-3xl mb-5 block">{item.icon}</span>
+                <h3 className="text-surface font-bold text-xl mb-3 font-headline group-hover:text-primary transition-colors">{item.title}</h3>
+                <p className="text-surface/55 leading-relaxed">{item.body}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── FINAL CTA ── */}
       <section className="py-32 px-8 bg-surface relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/8 via-transparent to-transparent pointer-events-none" />
