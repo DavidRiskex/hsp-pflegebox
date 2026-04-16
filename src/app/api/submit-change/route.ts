@@ -1,13 +1,20 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { PRODUCTS } from "../../../lib/products";
+import { generateOrderPdf } from "../../../lib/pdfGenerator";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { form, cart, wantsBedMat } = body;
+    const { form, cart, wantsBedMat, signature } = body;
 
-    let selectedNamesHtml = "";
+    let selectedNamesHtml = Object.entries(cart as Record<string, { quantity: number; size?: string }>)
+      .map(([id, item]) => {
+        const product = PRODUCTS.find((p) => p.id === id);
+        return `<li>${item.quantity}x ${product?.category}${item.size ? ` (Größe ${item.size})` : ""}</li>`;
+      })
+      .join("");
+
     // Generate PDF (wantsBedMat is available, assume hasProvider="no" for box changes)
     let pdfBuffer: Buffer | null = null;
     try {
@@ -15,7 +22,7 @@ export async function POST(request: Request) {
         const product = PRODUCTS.find((p) => p.id === id);
         return sum + (product ? product.price * item.quantity : 0);
       }, 0);
-      const pdfBytes = await generateOrderPdf(form, cart, currentBudget, wantsBedMat, "no");
+      const pdfBytes = await generateOrderPdf(form, cart, currentBudget, wantsBedMat, "no", signature);
       pdfBuffer = Buffer.from(pdfBytes);
     } catch (e) {
       console.warn("Could not generate PDF for change request", e);

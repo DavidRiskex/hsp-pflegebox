@@ -6,7 +6,7 @@ import { generateOrderPdf } from "../../../lib/pdfGenerator";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { form, cart, wantsBedMat, deliveryType, intervalType, hasProvider } = body;
+    const { form, cart, wantsBedMat, deliveryType, intervalType, hasProvider, signature } = body;
 
     // Calculate current budget
     const currentBudget = Object.entries(cart).reduce((sum, [id, item]: [string, any]) => {
@@ -17,7 +17,7 @@ export async function POST(request: Request) {
     // ── Generate the Output PDF ──
     let pdfBuffer: Buffer | null = null;
     try {
-      const pdfBytes = await generateOrderPdf(form, cart, currentBudget, wantsBedMat, hasProvider);
+      const pdfBytes = await generateOrderPdf(form, cart, currentBudget, wantsBedMat, hasProvider, signature, intervalType);
       pdfBuffer = Buffer.from(pdfBytes);
     } catch (err) {
       console.error("Fehler bei der PDF Generierung:", err);

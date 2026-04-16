@@ -41,7 +41,7 @@ export const PRODUCTS: ProductConfig[] = [
     brandLine: "Untersuchungshandschuhe Vinyl – puderfrei",
     packSize: "100 St.",
     price: 10.71,
-    img: null,
+    img: "/products/peha-soft-nitrile-blue.png", // Vinyl typically looks similar or using blue as placeholder
     hasSizes: true,
   },
 
@@ -53,7 +53,7 @@ export const PRODUCTS: ProductConfig[] = [
     brandLine: "Vala®Fit tape – von HARTMANN",
     packSize: "100 St.",
     price: 11.90,
-    img: null,
+    img: "/products/hartmann-vala-fit-tape-packung_1280x1280.jpg",
   },
   {
     id: "apron",
@@ -73,7 +73,7 @@ export const PRODUCTS: ProductConfig[] = [
     brandLine: "Sterillium® 2in1 wipes – von HARTMANN",
     packSize: "15 St.",
     price: 2.86,
-    img: null,
+    img: "/products/sterillium-wipes.png",
   },
   {
     id: "bacillol-24",
@@ -91,7 +91,7 @@ export const PRODUCTS: ProductConfig[] = [
     brandLine: "Bacillol® 30 Sensitive Tissues (Dose/Flowpack)",
     packSize: "120 St.",
     price: 22.85,
-    img: null, 
+    img: "/products/bacillol-30-tissues.png", 
   },
   {
     id: "sterillium-home-80",
@@ -131,7 +131,7 @@ export const PRODUCTS: ProductConfig[] = [
     brandLine: "MoliCare® Premium Bed Mat 5 Tropfen",
     packSize: "25 St.",
     price: 12.20,
-    img: null,
+    img: "/products/65804-138744_molicare_premium_bedmat_1_1920x1920.webp",
   },
   {
     id: "bedmat-30",
@@ -140,7 +140,7 @@ export const PRODUCTS: ProductConfig[] = [
     brandLine: "MoliCare® Premium Bed Mat 5 Tropfen",
     packSize: "30 St.",
     price: 14.64,
-    img: null,
+    img: "/products/65804-138744_molicare_premium_bedmat_1_1920x1920.webp",
   },
 
   // ── Desinfektionsmittel (Flüssig / Gel) ──
@@ -180,7 +180,7 @@ export const PRODUCTS: ProductConfig[] = [
     brandLine: "Bacillol® AF – von HARTMANN",
     packSize: "500 ml",
     price: 6.72,
-    img: null,
+    img: "/products/bacillol-af.png",
   },
 ];
 

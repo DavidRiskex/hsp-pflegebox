@@ -8,7 +8,9 @@ export async function generateOrderPdf(
   cart: Record<string, { quantity: number; size?: string }>, 
   totalBudget: number,
   wantsBedMat: boolean | null,
-  hasProvider: string
+  hasProvider: string,
+  signatureBase64?: string | null,
+  intervalType?: string | null
 ): Promise<Uint8Array> {
   // Load the template from the root of the project
   const templatePath = path.join(process.cwd(), "Antrag Pflegebox.pdf");
@@ -86,6 +88,13 @@ export async function generateOrderPdf(
             size: 11,
           });
         }
+        
+        // DRAW DOTS if it's an 8-box date field
+        if (numBoxes === 8 && cleanText.length === 8) {
+          const dotY = rect.y + (rect.height * 0.25);
+          targetPage.drawText(".", { x: rect.x + (boxWidth * 2) - 1, y: dotY, size: 11 }); // After DD
+          targetPage.drawText(".", { x: rect.x + (boxWidth * 4) - 1, y: dotY, size: 11 }); // After MM
+        }
       }
     } catch (e) {
       console.warn(`Could not draw combed text for field: ${fieldName}`, e);
@@ -112,18 +121,36 @@ export async function generateOrderPdf(
   const zipCity = `${form.zip || ""} ${form.city || ""}`;
   
   setTextField("Name Kunde", fullName);
-  drawCombedText("Geburtsdatum", form.dob || "", 8); // Precise comb drawing
+  // Reformat YYYY-MM-DD to DDMMYYYY for combed field (fills both P2 and P5)
+  const dobParts = (form.dob || "").split("-");
+  const dobGerman = dobParts.length === 3 ? `${dobParts[2]}${dobParts[1]}${dobParts[0]}` : "";
+  drawCombedText("Geburtsdatum", dobGerman, 8); 
+  
   setTextField("Strasse", address1);
   setTextField("PLZ_Ort", zipCity);
-  setTextField("Adresse", `${address1}, ${zipCity}`); 
+  setTextField("Adresse", `${address1}, ${zipCity}`); // Fills both P2 and P5
+  setTextField("absender", `${fullName}, ${address1}, ${zipCity}`); // Page 4
   setTextField("Telefon", form.phone || "");
   setTextField("pflegekasse", form.insurance || "");
-  drawCombedText("Versicherten-Nummer", form.insuranceNo || "", 10); // Precise comb drawing
+  drawCombedText("Versicherten-Nummer", (form.insuranceNo || "").replace(/\s/g, ''), 10); // Fills both P2 and P5
 
   // If there's an old provider (we must only fill this if the user actually clicked "YES, I change provider")
   if (form.oldProvider && hasProvider === "yes") {
+    // Page 4 & 5 mappings
     setTextField("Bisheriger Versorger", form.oldProvider);
     setTextField("Bisheriger Vorsorger", form.oldProvider);
+    setTextField("bisheriger Versorger Straße", form.oldProviderStreet || "");
+    setTextField("bisheriger Versorger PLZ", form.oldProviderZipCity || "");
+    
+    // Dates for Page 5
+    if (form.oldContractEnd) {
+      const endParts = form.oldContractEnd.split("-");
+      if (endParts.length === 3) setTextField("kündigungsdatum", `${endParts[2]}.${endParts[1]}.${endParts[0]}`);
+    }
+    if (form.newContractStart) {
+      const startParts = form.newContractStart.split("-");
+      if (startParts.length === 3) setTextField("vertragsbeginn", `${startParts[2]}.${startParts[1]}.${startParts[0]}`);
+    }
   }
 
   // ── 2. Bed Mat ──
@@ -195,8 +222,56 @@ export async function generateOrderPdf(
     }
   });
 
-  // ── 4. Total Sum ──
+  // ── 4. Total Sum & Remarks ──
   setTextField("Summe", totalBudget.toFixed(2).replace('.', ','));
+
+  if (intervalType) {
+    const intervalText = intervalType === "quartal" ? "Quartalsweise" : "Monatlich";
+    setTextField("Text2", `Gewünschtes Lieferintervall: ${intervalText}`);
+  }
+
+      // ── 5. Add Digital Signature ──
+  if (signatureBase64) {
+    try {
+      const page2 = pages[2]; // Page 3 (0-indexed)
+      
+      // Remove base64 prefix if present
+      const base64Data = signatureBase64.split(',')[1] || signatureBase64;
+      const signatureImage = await pdfDoc.embedPng(Buffer.from(base64Data, "base64"));
+      
+      // Draw signature on the right-hand line (Page 3) - MICRO-ADJUSTED (Refined Left)
+      page2.drawImage(signatureImage, {
+        x: 300,
+        y: 290,
+        width: 180,
+        height: 60,
+      });
+
+      // Draw signature also on the last page (Page 5) for provider change - LOWERED slightly
+      const page4 = pages[4]; // Page 5 (0-indexed)
+      page4.drawImage(signatureImage, {
+        x: 300,
+        y: 125,
+        width: 180,
+        height: 60,
+      });
+
+      // Draw today's date into the boxed area on Page 3 (Datum field)
+      // Format: DD.MM.YYYY
+      const today = new Date();
+      const dd = String(today.getDate()).padStart(2, '0');
+      const mm = String(today.getMonth() + 1).padStart(2, '0');
+      const yyyy = today.getFullYear();
+      const todayTextShort = `${dd}${mm}${yyyy}`;
+      
+      drawCombedText("Datum", todayTextShort, 8);
+      
+      // Also fill the 'ort datum' boxed area on Page 5
+      drawCombedText("ort datum", todayTextShort, 8);
+    } catch (e) {
+      console.warn("Could not embed signature into PDF", e);
+    }
+  }
 
   // DO NOT flatten the form! Flattening Comb fields (Versichertennummer, Geburtsdatum) in pdf-lib destroys character spacing.
   // pdfForm.flatten();

@@ -3,117 +3,227 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <main>
+    <main className="pt-24 overflow-x-hidden">
 
-      {/* ── HERO ─────────────────────────────────────────── */}
-      <section style={{ background: "var(--clr-bg)", paddingTop: "var(--space-lg)", paddingBottom: "var(--space-md)" }}>
-        <div className="container" style={{ textAlign: "center" }}>
-          <h1 style={{ maxWidth: 760, margin: "0 auto 20px auto" }}>
-            Kostenlose Pflegebox,<br />jeden Monat.
-          </h1>
-          <p style={{ fontSize: "1.2rem", color: "var(--clr-text-muted)", maxWidth: 560, margin: "0 auto 40px auto", lineHeight: 1.65 }}>
-            Hochwertige Pflegehilfsmittel von HARTMANN direkt zu Ihnen nach Hause.
-            Von der Krankenkasse übernommen – wir erledigen alles für Sie.
-          </p>
-          <div style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap", marginBottom: 56 }}>
-            <Link href="/beantragen" className="btn btn-primary" style={{ padding: "18px 44px", fontSize: "1.1rem" }}>
-              Jetzt beantragen
-            </Link>
-            <Link href="/produkte" className="btn btn-secondary" style={{ padding: "18px 44px", fontSize: "1.1rem" }}>
-              Produkte ansehen
-            </Link>
-          </div>
+      {/* ── HERO ── */}
+      <section className="relative px-8 py-20 lg:py-36 overflow-hidden max-w-7xl mx-auto">
+        {/* Ambient blobs */}
+        <div className="absolute -top-32 -left-32 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute top-10 right-0 w-[400px] h-[400px] bg-tertiary/10 rounded-full blur-[100px] pointer-events-none" />
 
-          {/* Hero Image */}
-          <div style={{
-            borderRadius: "var(--radius-lg)",
-            overflow: "hidden",
-            boxShadow: "0 24px 80px rgba(27,43,58,0.18)",
-            background: "rgba(255,255,255,0.25)",
-          }}>
-            <Image
-              src="/paket.png"
-              alt="HSP Pflegebox"
-              width={1080}
-              height={520}
-              style={{ width: "100%", height: "auto", display: "block" }}
-              priority
-            />
-          </div>
-        </div>
-      </section>
+        <div className="grid lg:grid-cols-12 gap-16 items-center relative z-10">
+          <div className="lg:col-span-7">
+            {/* Pill badge */}
+            <div className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary font-bold tracking-widest uppercase text-xs px-4 py-2 rounded-full mb-8">
+              <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+              Premium Pflegelösungen
+            </div>
 
-      {/* ── HOW IT WORKS ─────────────────────────────────── */}
-      <section style={{ background: "var(--clr-bg)", paddingTop: 80, paddingBottom: 80 }}>
-        <div className="container">
-          <h2 style={{ textAlign: "center", marginBottom: 48 }}>In drei einfachen Schritten</h2>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24 }}>
-            {[
-              { n: "01", title: "Antrag stellen", body: "Wählen Sie Ihre Pflegehilfsmittel aus und füllen Sie das Online-Formular in wenigen Minuten aus." },
-              { n: "02", title: "Wir erledigen den Rest", body: "Unser Team stellt den Antrag bei Ihrer Pflegekasse – Sie müssen sich um nichts kümmern." },
-              { n: "03", title: "Lieferung nach Hause", body: "Ihre Pflegebox kommt sicher und kostenlos per DHL direkt an Ihre Tür." },
-            ].map((s) => (
-              <div key={s.n} style={{ background: "var(--clr-surface)", borderRadius: "var(--radius-md)", padding: 40, boxShadow: "var(--shadow-card)" }}>
-                <span style={{ display: "block", fontWeight: 700, fontSize: "0.8rem", letterSpacing: "0.1em", color: "var(--clr-text-muted)", marginBottom: 16, textTransform: "uppercase" }}>{s.n}</span>
-                <h3 style={{ marginBottom: 12, fontSize: "1.3rem" }}>{s.title}</h3>
-                <p style={{ color: "var(--clr-text-muted)", marginBottom: 0, fontSize: "1rem", lineHeight: 1.6 }}>{s.body}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+            <h1 className="text-5xl lg:text-[5.5rem] font-extrabold text-on-surface leading-[1.05] tracking-tight mb-8 font-headline">
+              Würde in jedem{" "}
+              <span className="relative inline-block">
+                <span className="text-primary italic">wesentlichen</span>
+                <span className="absolute -bottom-1 left-0 w-full h-1 bg-primary/30 rounded-full" />
+              </span>{" "}
+              Detail.
+            </h1>
 
-      {/* ── VORTEILE ─────────────────────────────────────── */}
-      <section style={{ background: "rgba(27,43,58,0.05)", paddingTop: 80, paddingBottom: 80 }}>
-        <div className="container">
-          <div style={{ textAlign: "center", marginBottom: 48 }}>
-            <h2>Warum HSP-Pflegebox?</h2>
-            <p style={{ color: "var(--clr-text-muted)", maxWidth: 520, margin: "12px auto 0 auto" }}>
-              Qualität, Einfachheit und Verlässlichkeit – für Sie und Ihre Familie.
+            <p className="text-xl text-on-surface-variant max-w-xl mb-12 leading-relaxed">
+              Hochwertige Pflegehilfsmittel <strong className="text-on-surface">direkt an Ihre Haustür</strong>, vollständig von Ihrer Pflegekasse übernommen. Professionelle Pflege zu Hause – ohne Bürokratie.
             </p>
+
+            <div className="flex flex-col sm:flex-row gap-5">
+              <Link
+                href="/beantragen"
+                className="bg-primary text-on-primary px-10 py-5 rounded-2xl font-bold text-lg shadow-xl shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-1 transition-all active:scale-95 text-center flex items-center justify-center gap-2"
+              >
+                <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>assignment_turned_in</span>
+                Jetzt beantragen
+              </Link>
+              <Link
+                href="/produkte"
+                className="px-10 py-5 rounded-2xl font-bold text-lg border-2 border-surface-variant/30 bg-surface-container-lowest hover:border-primary/40 hover:-translate-y-1 transition-all text-center flex items-center justify-center gap-2"
+              >
+                Produkte ansehen
+                <span className="material-symbols-outlined text-lg">arrow_forward</span>
+              </Link>
+            </div>
+
+            {/* Social proof pills */}
+            <div className="mt-12 flex flex-wrap gap-4">
+              {[
+                { icon: "verified", label: "50.000+ Familien" },
+                { icon: "star", label: "Bewertung 4.9/5" },
+                { icon: "health_and_safety", label: "Kassenzugelassen" },
+              ].map((item) => (
+                <div key={item.label} className="flex items-center gap-2 bg-surface-container-lowest border border-surface-variant/20 rounded-full px-4 py-2 text-sm font-semibold text-on-surface editorial-shadow">
+                  <span className="material-symbols-outlined text-primary text-sm" style={{ fontVariationSettings: "'FILL' 1" }}>{item.icon}</span>
+                  {item.label}
+                </div>
+              ))}
+            </div>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 20 }}>
+
+          <div className="lg:col-span-5 relative">
+            <div className="relative rounded-[2.5rem] overflow-hidden editorial-shadow bg-surface-container-lowest p-3 border border-surface-variant/10">
+              <Image
+                alt="Minimalistische Pflegebox"
+                src="/paket.png"
+                width={600}
+                height={750}
+                className="w-full aspect-[4/5] object-cover rounded-[2rem]"
+                priority
+              />
+              {/* Floating testimonial card */}
+              <div className="absolute bottom-8 left-6 right-6 glass-panel p-5 rounded-2xl editorial-shadow border border-white/60">
+                <div className="flex gap-1 mb-2">
+                  {[...Array(5)].map((_, i) => <span key={i} className="text-amber-400 text-sm">★</span>)}
+                </div>
+                <p className="text-on-surface font-semibold text-sm leading-snug mb-2">"Alles was wir brauchten, genau dann wenn wir es brauchten."</p>
+                <p className="text-on-surface-variant text-xs">— Maria S., Berlin</p>
+              </div>
+            </div>
+            {/* Floating badge */}
+            <div className="absolute -top-4 -right-4 bg-primary text-on-primary rounded-2xl p-4 shadow-xl shadow-primary/30 text-center min-w-[90px]">
+              <p className="text-2xl font-extrabold leading-none">42€</p>
+              <p className="text-[10px] font-bold opacity-80 uppercase tracking-wider mt-1">Monatlich</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── TRUST BAR ── */}
+      <section className="bg-on-surface py-10 px-8">
+        <div className="max-w-7xl mx-auto flex flex-wrap justify-center md:justify-between items-center gap-8">
+          {[
+            { icon: "verified_user", label: "TÜV Zertifiziert" },
+            { icon: "health_and_safety", label: "Kassen Zugelassen" },
+            { icon: "local_shipping", label: "Gratis Versand" },
+            { icon: "eco", label: "Nachhaltig" },
+            { icon: "lock", label: "DSGVO Konform" },
+          ].map((item) => (
+            <div key={item.label} className="flex items-center gap-3 text-surface/70 hover:text-surface transition-colors">
+              <span className="material-symbols-outlined text-primary/80 text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>{item.icon}</span>
+              <span className="font-bold text-sm uppercase tracking-widest">{item.label}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── PROCESS SECTION ── */}
+      <section className="py-32 px-8 bg-surface relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent pointer-events-none" />
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="text-center mb-24">
+            <span className="text-primary font-bold tracking-widest uppercase text-sm">So einfach geht&apos;s</span>
+            <h2 className="text-4xl lg:text-6xl font-extrabold tracking-tight mt-3 mb-4 font-headline">Drei Schritte zur Entlastung</h2>
+            <p className="text-on-surface-variant text-lg max-w-xl mx-auto">Wir kümmern uns um die Bürokratie, Sie konzentrieren sich aufs Wesentliche.</p>
+          </div>
+          <div className="grid md:grid-cols-3 gap-8">
             {[
-              { icon: "📦", title: "Kostenfreie Lieferung", body: "Versicherungsgedeckt – 0 € Eigenanteil für Sie." },
-              { icon: "🛡️", title: "HARTMANN-Qualität", body: "Geprüfte Medizinprodukte vom deutschen Marktführer." },
-              { icon: "🌿", title: "Nachhaltig", body: "Plastikfreie Tücher, CO₂-sparende Quartalslieferung." },
-              { icon: "📄", title: "Kein Papierkram", body: "Wir übernehmen die komplette Abwicklung mit der Kasse." },
-            ].map((f) => (
-              <div key={f.title} style={{ background: "var(--clr-surface)", borderRadius: "var(--radius-md)", padding: "32px 28px", boxShadow: "var(--shadow-card)" }}>
-                <div style={{ fontSize: "2rem", marginBottom: 14 }}>{f.icon}</div>
-                <h4 style={{ marginBottom: 8, fontSize: "1.1rem" }}>{f.title}</h4>
-                <p style={{ color: "var(--clr-text-muted)", marginBottom: 0, fontSize: "0.98rem", lineHeight: 1.6 }}>{f.body}</p>
+              { id: "01", icon: "fact_check", title: "Anspruch prüfen", body: "Geben Sie einfach Ihre Versicherungsdaten ein. Die meisten Nutzer mit Pflegegrad qualifizieren sich für 100% Kostenübernahme." },
+              { id: "02", icon: "inventory_2", title: "Box konfigurieren", body: "Wählen Sie die Hilfsmittel aus, die Sie am dringendsten benötigen. Wir bieten Sets oder volle Individualisierung." },
+              { id: "03", icon: "local_shipping", title: "Monatliche Lieferung", body: "Ihre Pflegebox kommt jeden Monat direkt vor Ihre Tür. Jederzeit änderbar oder kündbar, komplett ohne Kosten." },
+            ].map((step, idx) => (
+              <div key={step.id} className="group relative bg-surface-container-lowest rounded-[2rem] p-10 border border-surface-variant/10 hover:border-primary/20 hover:shadow-2xl hover:shadow-primary/5 hover:-translate-y-2 transition-all duration-500 editorial-shadow">
+                <span className="text-[7rem] font-extrabold text-surface-container-highest/50 absolute -top-6 right-6 select-none leading-none group-hover:text-primary/10 transition-colors">{step.id}</span>
+                <div className="w-14 h-14 bg-primary rounded-2xl flex items-center justify-center mb-8 shadow-lg shadow-primary/20 group-hover:scale-110 transition-transform">
+                  <span className="material-symbols-outlined text-on-primary text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>{step.icon}</span>
+                </div>
+                <h3 className="text-2xl font-bold mb-4 font-headline">{step.title}</h3>
+                <p className="text-on-surface-variant leading-relaxed">{step.body}</p>
+                {idx < 2 && (
+                  <div className="hidden md:block absolute -right-4 top-1/2 -translate-y-1/2 z-10 text-primary/30">
+                    <span className="material-symbols-outlined text-4xl">arrow_forward</span>
+                  </div>
+                )}
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── UMWELT ──────────────────────────────────────── */}
-      <section style={{ background: "var(--clr-bg)", paddingTop: 80, paddingBottom: 80 }}>
-        <div className="container" style={{ maxWidth: 780, textAlign: "center" }}>
-          <h2 style={{ marginBottom: 20 }}>Auch unsere Umwelt ist pflegebedürftig</h2>
-          <p style={{ color: "var(--clr-text-muted)", lineHeight: 1.8, fontSize: "1.1rem", marginBottom: 0 }}>
-            Die Umwelt verdient genauso Pflege wie unsere Kunden. Unsere quartalsweise Lieferung reduziert
-            die Lieferhäufigkeit und den CO₂-Fußabdruck gezielt. Dazu bieten wir nun 100 % plastikfreie
-            Flächendesinfektionstücher – ein weiterer Schritt in Richtung umweltfreundlicherer Lösungen.
-          </p>
+      {/* ── BENTO FEATURE GRID ── */}
+      <section className="py-24 px-8 bg-surface-container-low">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl lg:text-5xl font-extrabold tracking-tight mb-4 font-headline">Warum HSP Pflegeshop?</h2>
+            <p className="text-on-surface-variant text-lg">Qualität, Transparenz und echte Fürsorge – in jedem Detail.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
+            {/* Big card */}
+            <div className="md:col-span-2 md:row-span-2 bg-on-surface text-surface rounded-[2rem] p-10 flex flex-col justify-between relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+              <div className="relative z-10">
+                <h3 className="text-3xl font-extrabold mb-5 font-headline">Klarheit im Design</h3>
+                <p className="text-surface/70 text-lg leading-relaxed">Unsere Benutzeroberfläche wurde speziell für einfache Bedienbarkeit entwickelt. Große Texte, klare Symbole und ein linearer Prozess stellen sicher, dass niemand zurückgelassen wird.</p>
+              </div>
+              <div className="relative z-10 rounded-xl overflow-hidden bg-surface/5 border border-surface/10 p-4 mt-8">
+                <Image alt="HSP Logo" src="/logo.jpg" width={400} height={200} className="w-full h-40 object-contain rounded-xl" />
+              </div>
+            </div>
+
+            {/* Eco card */}
+            <div className="md:col-span-2 bg-primary text-on-primary rounded-[2rem] p-10 flex flex-col justify-center shadow-2xl shadow-primary/20 relative overflow-hidden">
+              <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-white/10 rounded-full" />
+              <span className="material-symbols-outlined text-5xl mb-5 opacity-90" style={{ fontVariationSettings: "'FILL' 1" }}>eco</span>
+              <h3 className="text-3xl font-bold mb-3 font-headline">Nachhaltige Pflege</h3>
+              <p className="opacity-85 leading-relaxed">Alle unsere Hilfsmittel werden ethisch bezogen und wir setzen konsequent auf Plastikreduzierung in den Verpackungen.</p>
+            </div>
+
+            {/* Budget card */}
+            <div className="md:col-span-1 bg-primary/10 border-2 border-primary/20 rounded-[2rem] p-8 flex flex-col items-center justify-center text-center">
+              <span className="text-5xl font-extrabold text-primary mb-2 font-headline">42€</span>
+              <p className="text-primary font-bold text-sm uppercase tracking-widest">Monatlich</p>
+              <p className="text-on-surface-variant text-sm mt-2">von der Kasse übernommen</p>
+            </div>
+
+            {/* DSGVO card */}
+            <div className="md:col-span-1 bg-surface-container-lowest border border-surface-variant/15 rounded-[2rem] p-8 flex flex-col items-center justify-center text-center editorial-shadow">
+              <span className="material-symbols-outlined text-primary text-5xl mb-3" style={{ fontVariationSettings: "'FILL' 1" }}>lock</span>
+              <p className="text-on-surface font-bold">DSGVO Konform</p>
+              <p className="text-on-surface-variant text-sm mt-1">Ihre Daten sind sicher</p>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* ── CTA FINAL ──────────────────────────────────── */}
-      <section style={{ background: "var(--clr-primary)", paddingTop: 80, paddingBottom: 80, textAlign: "center" }}>
-        <div className="container">
-          <h2 style={{ color: "#fff", marginBottom: 16 }}>Bereit für Ihre kostenlose Pflegebox?</h2>
-          <p style={{ color: "rgba(255,255,255,0.7)", marginBottom: 40, fontSize: "1.1rem" }}>
-            In wenigen Minuten fertig – wir kümmern uns um den Rest.
+      {/* ── FINAL CTA ── */}
+      <section className="py-32 px-8 bg-surface relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-primary/8 via-transparent to-transparent pointer-events-none" />
+        <div className="max-w-4xl mx-auto relative z-10 text-center">
+          <span className="inline-flex items-center gap-2 bg-primary/10 border border-primary/20 text-primary font-bold tracking-widest uppercase text-xs px-4 py-2 rounded-full mb-8">
+            <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+            Jetzt starten
+          </span>
+          <h2 className="text-4xl lg:text-6xl font-extrabold mb-8 tracking-tight font-headline text-on-surface">
+            Bereit für Ihre erste Pflegebox?
+          </h2>
+          <p className="text-on-surface-variant text-xl mb-14 max-w-2xl mx-auto leading-relaxed">
+            Es dauert weniger als 2 Minuten, um Ihren Anspruch zu prüfen. <br className="hidden md:block" />
+            Kein Papierkram von Ihrer Seite nötig.
           </p>
-          <Link href="/beantragen" className="btn btn-white" style={{ fontSize: "1.1rem", padding: "18px 48px" }}>
-            Jetzt kostenlos beantragen →
+          <Link
+            href="/beantragen"
+            className="inline-flex items-center gap-3 bg-primary text-on-primary px-14 py-6 rounded-[2rem] font-bold text-xl shadow-2xl shadow-primary/30 hover:shadow-primary/50 hover:-translate-y-1 transition-all active:scale-95"
+          >
+            <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>assignment_turned_in</span>
+            Kostenlosen Antrag starten
           </Link>
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-8 text-on-surface-variant/60 font-medium">
+            {[
+              { icon: "verified", label: "TÜV Geprüft" },
+              { icon: "security", label: "DSGVO Konform" },
+              { icon: "payments", label: "100% Kostenfrei" },
+            ].map((item) => (
+              <div key={item.label} className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>{item.icon}</span>
+                <span>{item.label}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
-
     </main>
   );
 }

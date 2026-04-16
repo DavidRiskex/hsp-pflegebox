@@ -5,7 +5,7 @@ import { PRODUCTS } from "../../../lib/products";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { form, cart, wantsBedMat } = body;
+    const { form, cart, wantsBedMat, hasProvider, signature, intervalType } = body;
 
     // Calculate current budget
     const currentBudget = Object.entries(cart).reduce((sum, [id, item]: [string, any]) => {
@@ -14,7 +14,7 @@ export async function POST(request: Request) {
     }, 0);
 
     // Generate PDF
-    const pdfBytes = await generateOrderPdf(form, cart, currentBudget, wantsBedMat, hasProvider || "no");
+    const pdfBytes = await generateOrderPdf(form, cart, currentBudget, wantsBedMat, hasProvider || "no", signature, intervalType);
     const pdfBuffer = Buffer.from(pdfBytes);
 
     // Return the PDF buffer directly with correct headers
