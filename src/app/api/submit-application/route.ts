@@ -4,16 +4,12 @@ import { PRODUCTS, TOTAL_BUDGET } from "../../../lib/products";
 import { generateOrderPdf } from "../../../lib/pdfGenerator";
 
 export async function POST(request: Request) {
-  const apiKey = process.env["RESEND_API_KEY"];
+  const apiKey = process.env.RESEND_API_KEY;
   
   if (!apiKey) {
-    const availableKeys = Object.keys(process.env).filter(k => k.includes("RESEND"));
     console.error("❌ Kritischer Fehler: RESEND_API_KEY ist nicht gesetzt!");
-    console.log("Gefundene Resend-bezogene Keys:", availableKeys);
-    
     return NextResponse.json({ 
-      error: "Konfigurationsfehler: API Key fehlt.",
-      debug_info: `Gefundene Keys: ${availableKeys.join(", ") || "Keine"}`
+      error: "Konfigurationsfehler: API Key fehlt. Bitte prüfe die Vercel Umgebungsvariablen."
     }, { status: 500 });
   }
 
