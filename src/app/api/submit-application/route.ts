@@ -127,8 +127,9 @@ export async function POST(request: Request) {
         },
       });
 
+      const fullName = `${form.firstName} ${form.lastName}`.trim();
       const attachments = pdfBuffer ? [{
-        filename: `Bestellbogen_${form.name.replace(/\s+/g, '_')}.pdf`,
+        filename: `Bestellbogen_${fullName.replace(/\s+/g, '_')}.pdf`,
         content: pdfBuffer,
         contentType: 'application/pdf'
       }] : [];

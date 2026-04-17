@@ -78,29 +78,47 @@ export default function AendernPage() {
   const next = () => { setStep((s) => Math.min(s + 1, STEPS.length)); window.scrollTo(0, 0); };
   const prev = () => { setStep((s) => Math.max(s - 1, 1)); window.scrollTo(0, 0); };
 
-  const handleSubmit = async () => {
+  const validateStep = (): boolean => {
     const errors: Record<string, string> = {};
-    if (!form.firstName.trim()) errors.firstName = "Vorname fehlt";
-    if (!form.lastName.trim()) errors.lastName = "Nachname fehlt";
-    if (!form.dob) errors.dob = "Geburtsdatum fehlt";
-    if (!form.phone.trim()) errors.phone = "Telefonnummer fehlt";
-    if (form.email && !form.email.includes("@")) errors.email = "Ungültige E-Mail";
+    if (step === 3) {
+      if (!form.firstName.trim()) errors.firstName = "Vorname fehlt";
+      if (!form.lastName.trim()) errors.lastName = "Nachname fehlt";
+      if (!form.dob) errors.dob = "Geburtsdatum fehlt";
+      if (!form.phone.trim()) errors.phone = "Telefonnummer fehlt";
+      if (form.email && !form.email.includes("@")) errors.email = "Ungültige E-Mail";
+    }
+
+    if (step === 4) {
+      if (!signature) errors.signature = "Bitte unterschreiben Sie";
+    }
 
     setFieldErrors(errors);
     const firstError = Object.keys(errors)[0];
     if (firstError) {
-      scrollToError(firstError);
+      scrollToError(firstError === "signature" ? "signatureContainer" : firstError);
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = async () => {
+    if (!validateStep()) return;
+
+    if (step < 4) {
+      next();
       return;
     }
 
-    setSubmitted(true);
+    setIsSubmitting(true);
     try {
       await fetch("/api/submit-change", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ form, cart, wantsBedMat, signature }),
       });
+      setSubmitted(true);
     } catch { /* ignored */ }
+    finally { setIsSubmitting(false); }
   };
 
   if (submitted) {
@@ -300,7 +318,7 @@ export default function AendernPage() {
                 onClick={handleSubmit} 
                 className="w-full bg-primary text-on-primary py-6 rounded-2xl font-bold text-xl shadow-xl mt-8 hover:scale-[1.02] transition-transform active:scale-95"
               >
-                Bestätigen & Unterschreiben
+                Bestätigen & zur Unterschrift
               </button>
             </div>
           </div>
@@ -309,34 +327,43 @@ export default function AendernPage() {
         {/* Step 4: Unterschrift */}
         {step === 4 && (
           <div className="max-w-xl mx-auto w-full py-8 animate-in fade-in slide-in-from-bottom-4 duration-500 text-center">
-            <h2 className="text-3xl font-extrabold mb-4 font-headline uppercase tracking-tight">Digitale Unterschrift</h2>
+            <h2 className="text-3xl font-extrabold mb-4 font-headline uppercase tracking-tight text-on-surface">Digitale Unterschrift</h2>
             <p className="text-on-surface-variant mb-12">Bitte bestätigen Sie die Änderung mit Ihrer Unterschrift.</p>
             
-            {!signature ? (
-              <SignaturePad onSave={(s) => { setSignature(s); }} />
-            ) : (
-              <div className="bg-primary/5 rounded-3xl p-8 border-2 border-primary animate-in zoom-in-95 duration-300">
-                <p className="text-primary font-bold mb-4 flex items-center justify-center gap-2">
-                  <span className="material-symbols-outlined">check_circle</span>
-                  Erfolgreich unterschrieben
-                </p>
-                <div className="relative h-32 w-full mb-6 bg-white rounded-xl flex items-center justify-center">
-                   <img src={signature} alt="Gespeicherte Unterschrift" className="max-h-full max-w-full" />
+            <div id="signatureContainer" className={`p-1 rounded-[2.5rem] transition-all ${fieldErrors.signature ? 'bg-red-50 border-2 border-red-500' : ''}`}>
+              {!signature ? (
+                <>
+                  <SignaturePad onSave={(s) => { 
+                    setSignature(s); 
+                    setFieldErrors(prev => ({ ...prev, signature: "" }));
+                  }} />
+                  {fieldErrors.signature && <p className="text-red-500 font-bold mt-4">{fieldErrors.signature}</p>}
+                </>
+              ) : (
+                <div className="bg-primary/5 rounded-3xl p-8 border-2 border-primary animate-in zoom-in-95 duration-300">
+                  <p className="text-primary font-bold mb-4 flex items-center justify-center gap-2">
+                    <span className="material-symbols-outlined">check_circle</span>
+                    Erfolgreich unterschrieben
+                  </p>
+                  <div className="relative h-32 w-full mb-6 bg-white rounded-xl flex items-center justify-center">
+                    <img src={signature} alt="Gespeicherte Unterschrift" className="max-h-full max-w-full" />
+                  </div>
+                  <button 
+                    onClick={() => setSignature(null)}
+                    className="text-on-surface-variant text-sm font-bold hover:text-primary transition-colors underline mb-8 block mx-auto"
+                  >
+                    Zurücksetzen
+                  </button>
+                  <button 
+                    onClick={handleSubmit}
+                    disabled={isSubmitting}
+                    className="w-full bg-primary text-on-primary py-6 rounded-2xl font-bold text-xl shadow-xl shadow-primary/20"
+                  >
+                    {isSubmitting ? "Wird gespeichert..." : "Änderung jetzt speichern"}
+                  </button>
                 </div>
-                <button 
-                  onClick={() => setSignature(null)}
-                  className="text-on-surface-variant text-sm font-bold hover:text-primary transition-colors underline mb-8 block mx-auto"
-                >
-                  Zurücksetzen
-                </button>
-                <button 
-                  onClick={handleSubmit}
-                  className="w-full bg-primary text-on-primary py-6 rounded-2xl font-bold text-xl shadow-xl shadow-primary/20"
-                >
-                  Änderung jetzt speichern
-                </button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         )}
 

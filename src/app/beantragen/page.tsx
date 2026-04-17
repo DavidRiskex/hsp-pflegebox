@@ -127,11 +127,32 @@ export default function BeantragenPage() {
       if (!form.insuranceNo.trim()) errors.insuranceNo = "Versichertennummer fehlt";
     }
 
+    if (step === 5 && deliveryType === "family") {
+      if (!form.familyName.trim()) errors.familyName = "Empfänger fehlt";
+      if (!form.familyStreet.trim()) errors.familyStreet = "Straße fehlt";
+      if (!form.familyStreetNo.trim()) errors.familyStreetNo = "Nr.";
+      if (!form.familyZip.trim()) errors.familyZip = "PLZ fehlt";
+      if (!form.familyCity.trim()) errors.familyCity = "Ort fehlt";
+    }
+
+    if (step === 7) {
+      if (!signature) errors.signature = "Bitte unterschreiben Sie im Feld";
+    }
+
+    if (step === 8 && hasProvider === "yes") {
+      if (!form.oldProvider.trim()) errors.oldProvider = "Name fehlt";
+      if (!form.oldProviderStreet.trim()) errors.oldProviderStreet = "Straße/Nr. fehlt";
+      if (!form.oldProviderZipCity.trim()) errors.oldProviderZipCity = "PLZ/Ort fehlt";
+      if (!form.oldContractEnd) errors.oldContractEnd = "Datum fehlt";
+      if (!form.newContractStart) errors.newContractStart = "Datum fehlt";
+    }
+
     setFieldErrors(errors);
     
     const firstErrorField = Object.keys(errors)[0];
     if (firstErrorField) {
-      scrollToError(firstErrorField);
+      // For signature, we scroll to a container
+      scrollToError(firstErrorField === "signature" ? "signatureContainer" : firstErrorField);
       return false;
     }
 
@@ -528,12 +549,17 @@ export default function BeantragenPage() {
               <div>
                 <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Name der Krankenkasse</label>
                 <input 
+                  id="insurance"
                   type="text" 
-                  className="w-full bg-surface-container-lowest border-2 border-surface-variant/20 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium"
+                  className={`w-full bg-surface-container-lowest border-2 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium ${fieldErrors.insurance ? 'border-red-500' : 'border-surface-variant/20'}`}
                   placeholder="z.B. AOK, Barmer, TK..."
                   value={form.insurance}
-                  onChange={e => setForm(f => ({ ...f, insurance: e.target.value }))}
+                  onChange={e => {
+                    setForm(f => ({ ...f, insurance: e.target.value }));
+                    if (fieldErrors.insurance) setFieldErrors(prev => ({ ...prev, insurance: "" }));
+                  }}
                 />
+                {fieldErrors.insurance && <p className="text-red-500 text-[10px] mt-1 font-bold">{fieldErrors.insurance}</p>}
               </div>
               <div>
                 <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Versicherungsart</label>
@@ -552,12 +578,17 @@ export default function BeantragenPage() {
               <div>
                 <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Versichertennummer</label>
                 <input 
+                  id="insuranceNo"
                   type="text" 
-                  className="w-full bg-surface-container-lowest border-2 border-surface-variant/20 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium"
+                  className={`w-full bg-surface-container-lowest border-2 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium ${fieldErrors.insuranceNo ? 'border-red-500' : 'border-surface-variant/20'}`}
                   placeholder="Z.B. A123456789"
                   value={form.insuranceNo}
-                  onChange={e => setForm(f => ({ ...f, insuranceNo: e.target.value }))}
+                  onChange={e => {
+                    setForm(f => ({ ...f, insuranceNo: e.target.value }));
+                    if (fieldErrors.insuranceNo) setFieldErrors(prev => ({ ...prev, insuranceNo: "" }));
+                  }}
                 />
+                {fieldErrors.insuranceNo && <p className="text-red-500 text-[10px] mt-1 font-bold">{fieldErrors.insuranceNo}</p>}
               </div>
             </div>
           </div>
@@ -594,29 +625,73 @@ export default function BeantragenPage() {
             </div>
 
             {deliveryType === "family" && (
-              <div className="flex flex-col gap-4 p-8 glass-panel rounded-3xl animate-in zoom-in-95 duration-300">
+              <div className="flex flex-col gap-4 p-8 glass-panel rounded-3xl animate-in zoom-in-95 duration-300 border border-primary/10 bg-white/40 shadow-xl">
                 <div>
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Name des Empfängers</label>
-                  <input className="form-input w-full p-3" value={form.familyName} onChange={e => setForm(f => ({ ...f, familyName: e.target.value }))} />
+                  <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1 block ml-2">Name des Empfängers</label>
+                  <input 
+                    id="familyName"
+                    className={`form-input w-full p-4 rounded-xl border-2 transition-all ${fieldErrors.familyName ? 'border-red-500' : 'border-surface-variant/20'}`} 
+                    value={form.familyName} 
+                    onChange={e => {
+                      setForm(f => ({ ...f, familyName: e.target.value }));
+                      if (fieldErrors.familyName) setFieldErrors(prev => ({ ...prev, familyName: "" }));
+                    }} 
+                  />
+                  {fieldErrors.familyName && <p className="text-red-500 text-[10px] mt-1 font-bold ml-2">{fieldErrors.familyName}</p>}
                 </div>
                 <div className="flex flex-row gap-3">
                   <div className="flex-[3]">
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Straße</label>
-                    <input className="form-input w-full p-3" value={form.familyStreet} onChange={e => setForm(f => ({ ...f, familyStreet: e.target.value }))} />
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1 block ml-2">Straße</label>
+                    <input 
+                      id="familyStreet"
+                      className={`form-input w-full p-4 rounded-xl border-2 transition-all ${fieldErrors.familyStreet ? 'border-red-500' : 'border-surface-variant/20'}`} 
+                      value={form.familyStreet} 
+                      onChange={e => {
+                        setForm(f => ({ ...f, familyStreet: e.target.value }));
+                        if (fieldErrors.familyStreet) setFieldErrors(prev => ({ ...prev, familyStreet: "" }));
+                      }} 
+                    />
+                    {fieldErrors.familyStreet && <p className="text-red-500 text-[10px] mt-1 font-bold ml-2">{fieldErrors.familyStreet}</p>}
                   </div>
                   <div className="flex-[1]">
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Nr.</label>
-                    <input className="form-input w-full p-3" value={form.familyStreetNo} onChange={e => setForm(f => ({ ...f, familyStreetNo: e.target.value }))} />
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1 block ml-2">Nr.</label>
+                    <input 
+                      id="familyStreetNo"
+                      className={`form-input w-full p-4 rounded-xl border-2 transition-all ${fieldErrors.familyStreetNo ? 'border-red-500' : 'border-surface-variant/20'}`} 
+                      value={form.familyStreetNo} 
+                      onChange={e => {
+                        setForm(f => ({ ...f, familyStreetNo: e.target.value }));
+                        if (fieldErrors.familyStreetNo) setFieldErrors(prev => ({ ...prev, familyStreetNo: "" }));
+                      }} 
+                    />
                   </div>
                 </div>
                 <div className="flex flex-row gap-3">
                   <div className="flex-[1]">
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">PLZ</label>
-                    <input className="form-input w-full p-3" value={form.familyZip} onChange={e => setForm(f => ({ ...f, familyZip: e.target.value }))} />
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1 block ml-2">PLZ</label>
+                    <input 
+                      id="familyZip"
+                      className={`form-input w-full p-4 rounded-xl border-2 transition-all ${fieldErrors.familyZip ? 'border-red-500' : 'border-surface-variant/20'}`} 
+                      value={form.familyZip} 
+                      onChange={e => {
+                        setForm(f => ({ ...f, familyZip: e.target.value }));
+                        if (fieldErrors.familyZip) setFieldErrors(prev => ({ ...prev, familyZip: "" }));
+                      }} 
+                    />
+                    {fieldErrors.familyZip && <p className="text-red-500 text-[10px] mt-1 font-bold ml-2">{fieldErrors.familyZip}</p>}
                   </div>
                   <div className="flex-[3]">
-                    <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Ort</label>
-                    <input className="form-input w-full p-3" value={form.familyCity} onChange={e => setForm(f => ({ ...f, familyCity: e.target.value }))} />
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-1 block ml-2">Ort</label>
+                    <input 
+                      id="familyCity"
+                      className={`form-input w-full p-4 rounded-xl border-2 transition-all ${fieldErrors.familyCity ? 'border-red-500' : 'border-surface-variant/20'}`} 
+                      value={form.familyCity} 
+                      onChange={e => {
+                        setForm(f => ({ ...f, familyCity: e.target.value }));
+                        if (fieldErrors.familyCity) setFieldErrors(prev => ({ ...prev, familyCity: "" }));
+                      }} 
+                    />
+                    {fieldErrors.familyCity && <p className="text-red-500 text-[10px] mt-1 font-bold ml-2">{fieldErrors.familyCity}</p>}
                   </div>
                 </div>
               </div>
@@ -672,9 +747,17 @@ export default function BeantragenPage() {
             <h2 className="text-3xl font-extrabold mb-4 font-headline uppercase tracking-tight">Digitale Unterschrift</h2>
             <p className="text-on-surface-variant mb-12">Bitte unterschreiben Sie im Feld unten, um den Antrag abzuschließen.</p>
             
-            {!signature ? (
-              <SignaturePad onSave={(s) => { setSignature(s); next(); }} />
-            ) : (
+            <div id="signatureContainer" className={`p-1 rounded-[2.5rem] transition-all ${fieldErrors.signature ? 'bg-red-50 border-2 border-red-500' : ''}`}>
+              {!signature ? (
+                <>
+                  <SignaturePad onSave={(s) => { 
+                    setSignature(s); 
+                    setFieldErrors(prev => ({ ...prev, signature: "" }));
+                    next(); 
+                  }} />
+                  {fieldErrors.signature && <p className="text-red-500 font-bold mt-4">{fieldErrors.signature}</p>}
+                </>
+              ) : (
               <div className="bg-primary/5 rounded-3xl p-8 border-2 border-primary animate-in zoom-in-95 duration-300">
                 <p className="text-primary font-bold mb-4 flex items-center justify-center gap-2">
                   <span className="material-symbols-outlined">check_circle</span>
@@ -712,30 +795,81 @@ export default function BeantragenPage() {
               </div>
 
               {hasProvider === "yes" && (
+              {hasProvider === "yes" && (
                 <div className="animate-in zoom-in-95 duration-300 space-y-4">
                   <div>
                     <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Name des Altanbieters</label>
-                    <input className="form-input w-full p-4" placeholder="Name eintragen" value={form.oldProvider} onChange={e => setForm(f => ({ ...f, oldProvider: e.target.value }))} />
+                    <input 
+                      id="oldProvider"
+                      className={`form-input w-full p-4 border-2 rounded-xl transition-all ${fieldErrors.oldProvider ? 'border-red-500' : 'border-surface-variant/20'}`} 
+                      placeholder="Name eintragen" 
+                      value={form.oldProvider} 
+                      onChange={e => {
+                        setForm(f => ({ ...f, oldProvider: e.target.value }));
+                        if (fieldErrors.oldProvider) setFieldErrors(prev => ({ ...prev, oldProvider: "" }));
+                      }} 
+                    />
+                    {fieldErrors.oldProvider && <p className="text-red-500 text-[10px] mt-1 font-bold ml-2">{fieldErrors.oldProvider}</p>}
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="col-span-2">
                        <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Straße & Nr. des Altanbieters</label>
-                       <input className="form-input w-full p-4" placeholder="Musterstraße 123" value={form.oldProviderStreet} onChange={e => setForm(f => ({ ...f, oldProviderStreet: e.target.value }))} />
+                       <input 
+                         id="oldProviderStreet"
+                         className={`form-input w-full p-4 border-2 rounded-xl transition-all ${fieldErrors.oldProviderStreet ? 'border-red-500' : 'border-surface-variant/20'}`} 
+                         placeholder="Musterstraße 123" 
+                         value={form.oldProviderStreet} 
+                         onChange={e => {
+                           setForm(f => ({ ...f, oldProviderStreet: e.target.value }));
+                           if (fieldErrors.oldProviderStreet) setFieldErrors(prev => ({ ...prev, oldProviderStreet: "" }));
+                         }} 
+                       />
+                       {fieldErrors.oldProviderStreet && <p className="text-red-500 text-[10px] mt-1 font-bold ml-2">{fieldErrors.oldProviderStreet}</p>}
                     </div>
                     <div>
                        <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">PLZ & Ort des Altanbieters</label>
-                       <input className="form-input w-full p-4" placeholder="12345 Musterstadt" value={form.oldProviderZipCity} onChange={e => setForm(f => ({ ...f, oldProviderZipCity: e.target.value }))} />
+                       <input 
+                         id="oldProviderZipCity"
+                         className={`form-input w-full p-4 border-2 rounded-xl transition-all ${fieldErrors.oldProviderZipCity ? 'border-red-500' : 'border-surface-variant/20'}`} 
+                         placeholder="12345 Musterstadt" 
+                         value={form.oldProviderZipCity} 
+                         onChange={e => {
+                           setForm(f => ({ ...f, oldProviderZipCity: e.target.value }));
+                           if (fieldErrors.oldProviderZipCity) setFieldErrors(prev => ({ ...prev, oldProviderZipCity: "" }));
+                         }} 
+                       />
+                       {fieldErrors.oldProviderZipCity && <p className="text-red-500 text-[10px] mt-1 font-bold ml-2">{fieldErrors.oldProviderZipCity}</p>}
                     </div>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
                     <div>
                        <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Kündigungsdatum (Altvertrag)</label>
-                       <input type="date" className="form-input w-full p-4" value={form.oldContractEnd} onChange={e => setForm(f => ({ ...f, oldContractEnd: e.target.value }))} />
+                       <input 
+                         id="oldContractEnd"
+                         type="date" 
+                         className={`form-input w-full p-4 border-2 rounded-xl transition-all ${fieldErrors.oldContractEnd ? 'border-red-500' : 'border-surface-variant/20'}`} 
+                         value={form.oldContractEnd} 
+                         onChange={e => {
+                           setForm(f => ({ ...f, oldContractEnd: e.target.value }));
+                           if (fieldErrors.oldContractEnd) setFieldErrors(prev => ({ ...prev, oldContractEnd: "" }));
+                         }} 
+                       />
+                       {fieldErrors.oldContractEnd && <p className="text-red-500 text-[10px] mt-1 font-bold ml-2">{fieldErrors.oldContractEnd}</p>}
                     </div>
                     <div>
                        <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Versorgungsbeginn (Neu)</label>
-                       <input type="date" className="form-input w-full p-4" value={form.newContractStart} onChange={e => setForm(f => ({ ...f, newContractStart: e.target.value }))} />
+                       <input 
+                         id="newContractStart"
+                         type="date" 
+                         className={`form-input w-full p-4 border-2 rounded-xl transition-all ${fieldErrors.newContractStart ? 'border-red-500' : 'border-surface-variant/20'}`} 
+                         value={form.newContractStart} 
+                         onChange={e => {
+                           setForm(f => ({ ...f, newContractStart: e.target.value }));
+                           if (fieldErrors.newContractStart) setFieldErrors(prev => ({ ...prev, newContractStart: "" }));
+                         }} 
+                       />
+                       {fieldErrors.newContractStart && <p className="text-red-500 text-[10px] mt-1 font-bold ml-2">{fieldErrors.newContractStart}</p>}
                     </div>
                   </div>
 

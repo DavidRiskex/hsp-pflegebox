@@ -115,7 +115,7 @@ export async function POST(request: Request) {
       await transporter.sendMail({
         from: `"HSP Pflegebox Website" <${process.env.SMTP_USER}>`,
         to: process.env.ADMIN_EMAIL,
-        subject: `Änderung Pflegebox: ${form.name}`,
+        subject: `Änderung Pflegebox: ${form.firstName} ${form.lastName}`,
         html: teamHtml,
       });
     }
