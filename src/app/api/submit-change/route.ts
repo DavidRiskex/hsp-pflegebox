@@ -114,26 +114,28 @@ export async function POST(request: Request) {
 
       // Send to customer
       try {
-        await transporter.sendMail({
-          from: `"HSP Pflegebox" <${process.env.SMTP_USER}>`,
+        const info = await transporter.sendMail({
+          from: process.env.SMTP_USER,
           to: form.email,
+          bcc: adminEmail,
+          replyTo: adminEmail,
           subject: "Änderungsbestätigung Ihrer HSP-Pflegebox",
           html: customerHtml,
         });
-        console.log(`✅ Änderungsbestätigung an Kunde (${form.email}) gesendet.`);
+        console.log(`✅ Änderungsbestätigung an Kunde (${form.email}) & BCC an Admin gesendet. MessageId: ${info.messageId}`);
       } catch (e: any) {
         console.error(`❌ Fehler beim Senden (Kunde-Änderung) an ${form.email}:`, e.message);
       }
 
       // Send to admin
       try {
-        await transporter.sendMail({
-          from: `"HSP Pflegebox Website" <${process.env.SMTP_USER}>`,
+        const info = await transporter.sendMail({
+          from: process.env.SMTP_USER,
           to: adminEmail,
           subject: `Änderung Pflegebox: ${form.firstName} ${form.lastName}`,
           html: teamHtml,
         });
-        console.log(`✅ Änderungs-Benachrichtigung an Admin (${adminEmail}) gesendet.`);
+        console.log(`✅ Änderungs-Benachrichtigung an Admin (${adminEmail}) gesendet. MessageId: ${info.messageId}`);
       } catch (e: any) {
         console.error(`❌ Fehler beim Senden (Admin-Änderung) an ${adminEmail}:`, e.message);
       }

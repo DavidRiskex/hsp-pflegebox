@@ -142,29 +142,31 @@ export async function POST(request: Request) {
         contentType: 'application/pdf'
       }] : [];
 
-      // 1. Send to Customer
+      // 1. Send to Customer (with BCC to Admin for tracking)
       try {
-        await transporter.sendMail({
-          from: `"HSP Pflegebox" <${process.env.SMTP_USER}>`,
+        const info = await transporter.sendMail({
+          from: process.env.SMTP_USER, // Rein technische Adresse für bessere Zustellbarkeit
           to: form.email,
+          bcc: adminEmail, // Kopie an Admin zur Kontrolle
+          replyTo: adminEmail,
           subject: "Bestellbestätigung Ihrer HSP-Pflegebox",
           html: customerHtml,
         });
-        console.log(`✅ Bestätigung an Kunde (${form.email}) gesendet.`);
+        console.log(`✅ Bestätigung an Kunde (${form.email}) & BCC an Admin gesendet. MessageId: ${info.messageId}`);
       } catch (e: any) {
         console.error(`❌ Fehler beim Senden an Kunde (${form.email}):`, e.message);
       }
 
-      // 2. Send to Admin
+      // 2. Send to Admin (The notification with PDF)
       try {
-        await transporter.sendMail({
-          from: `"HSP Pflegebox Website" <${process.env.SMTP_USER}>`,
+        const info = await transporter.sendMail({
+          from: process.env.SMTP_USER,
           to: adminEmail,
           subject: `Neuer Antrag: ${fullName}`,
           html: teamHtml,
           attachments
         });
-        console.log(`✅ Benachrichtigung an Admin (${adminEmail}) gesendet.`);
+        console.log(`✅ Benachrichtigung an Admin (${adminEmail}) gesendet. MessageId: ${info.messageId}`);
       } catch (e: any) {
         console.error(`❌ Fehler beim Senden an Admin (${adminEmail}):`, e.message);
       }
