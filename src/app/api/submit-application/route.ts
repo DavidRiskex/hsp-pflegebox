@@ -1,7 +1,8 @@
-import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import { PRODUCTS, TOTAL_BUDGET } from "../../../lib/products";
 import { generateOrderPdf } from "../../../lib/pdfGenerator";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: Request) {
   try {
@@ -21,7 +22,6 @@ export async function POST(request: Request) {
       pdfBuffer = Buffer.from(pdfBytes);
     } catch (err) {
       console.error("Fehler bei der PDF Generierung:", err);
-      // We continue to send the email even if PDF generation fails.
     }
 
     let selectedNamesHtml = "";
@@ -116,56 +116,34 @@ export async function POST(request: Request) {
       <p><em>(Siehe angehängtes PDF für den ausgefüllten Bestellbogen)</em></p>
     `;
 
-    if (process.env.SMTP_HOST) {
-      const port = Number(process.env.SMTP_PORT) || 587;
-      const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: port,
-        secure: port === 465, 
-        pool: true, // Use pooling for better performance in serverless
-        auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS,
-        },
-        tls: {
-          rejectUnauthorized: false
-        },
-        connectionTimeout: 10000, // 10 seconds
-        greetingTimeout: 10000, 
+    if (process.env.RESEND_API_KEY) {
+      const fullName = `${form.firstName} ${form.lastName}`.trim();
+
+      // 1. Send to Customer
+      await resend.emails.send({
+        from: 'HSP Pflegebox <onboarding@resend.dev>',
+        to: form.email,
+        subject: 'Bestellbestätigung Ihrer HSP-Pflegebox',
+        html: customerHtml,
       });
 
-      const fullName = `${form.firstName} ${form.lastName}`.trim();
-      const attachments = pdfBuffer ? [{
-        filename: `Bestellbogen_${fullName.replace(/\s+/g, '_')}.pdf`,
-        content: pdfBuffer,
-        contentType: 'application/pdf'
-      }] : [];
+      // 2. Send to Admin (with PDF)
+      const adminMailOptions: any = {
+        from: 'HSP Website <onboarding@resend.dev>',
+        to: process.env.ADMIN_EMAIL || 'hsppflegetest@gmail.com',
+        subject: `Neuer Antrag: ${fullName}`,
+        html: teamHtml,
+      };
 
-      try {
-        console.log("Versuche E-Mails zu senden...");
-        // SEND TO CUSTOMER (No PDF)
-        await transporter.sendMail({
-          from: `"HSP Pflegebox" <${process.env.SMTP_USER}>`,
-          to: form.email,
-          subject: "Bestellbestätigung Ihrer HSP-Pflegebox",
-          html: customerHtml,
-        });
-        console.log("✅ Bestätigungsmail an Kunde gesendet.");
-
-        // SEND TO ADMIN (With PDF)
-        await transporter.sendMail({
-          from: `"HSP Pflegebox Website" <${process.env.SMTP_USER}>`,
-          to: process.env.ADMIN_EMAIL,
-          subject: `Neuer Antrag: ${fullName}`,
-          html: teamHtml,
-          attachments
-        });
-        console.log("✅ Benachrichtigung an Admin gesendet.");
-      } catch (mailErr: any) {
-        console.error("❌ SMTP Fehler Details:", mailErr.message);
-        console.error("Code:", mailErr.code);
-        console.error("Command:", mailErr.command);
+      if (pdfBuffer) {
+        adminMailOptions.attachments = [{
+          filename: `Bestellbogen_${fullName.replace(/\s+/g, '_')}.pdf`,
+          content: pdfBuffer,
+        }];
       }
+
+      await resend.emails.send(adminMailOptions);
+      console.log("✅ Emails via Resend gesendet.");
     }
 
     return NextResponse.json({ success: true }, { status: 200 });

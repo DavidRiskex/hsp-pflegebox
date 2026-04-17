@@ -1,7 +1,8 @@
-import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 import { PRODUCTS } from "../../../lib/products";
 import { generateOrderPdf } from "../../../lib/pdfGenerator";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: Request) {
   try {
@@ -15,7 +16,7 @@ export async function POST(request: Request) {
       })
       .join("");
 
-    // Generate PDF (wantsBedMat is available, assume hasProvider="no" for box changes)
+    // Generate PDF
     let pdfBuffer: Buffer | null = null;
     try {
       const currentBudget = Object.entries(cart).reduce((sum, [id, item]: [string, any]) => {
@@ -92,40 +93,29 @@ export async function POST(request: Request) {
       <ul>${selectedNamesHtml}${bedMatLine}</ul>
     `;
 
-    if (process.env.SMTP_HOST) {
-      const port = Number(process.env.SMTP_PORT) || 587;
-      const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: port,
-        secure: port === 465, 
-        pool: true,
-        auth: {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS,
-        },
-        tls: {
-          rejectUnauthorized: false
-        },
-        connectionTimeout: 10000,
-        greetingTimeout: 10000,
-      });
+    if (process.env.RESEND_API_KEY) {
+      const fullName = `${form.firstName} ${form.lastName}`.trim();
 
       // Send to customer
-      await transporter.sendMail({
-        from: `"HSP Pflegebox" <${process.env.SMTP_USER}>`,
+      await resend.emails.send({
+        from: 'HSP Pflegebox <onboarding@resend.dev>',
         to: form.email,
         subject: "Änderungsbestätigung Ihrer HSP-Pflegebox",
         html: customerHtml,
       });
 
       // Send to admin
-      await transporter.sendMail({
-        from: `"HSP Pflegebox Website" <${process.env.SMTP_USER}>`,
-        to: process.env.ADMIN_EMAIL,
-        subject: `Änderung Pflegebox: ${form.firstName} ${form.lastName}`,
+      await resend.emails.send({
+        from: 'HSP Website <onboarding@resend.dev>',
+        to: process.env.ADMIN_EMAIL || 'hsppflegetest@gmail.com',
+        subject: `Änderung Pflegebox: ${fullName}`,
         html: teamHtml,
       });
+      
+      console.log("✅ Emails (Change) via Resend gesendet.");
     }
+
+    return NextResponse.json({ success: true }, { status: 200 });
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (err) {
