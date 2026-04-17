@@ -753,7 +753,9 @@ export default function BeantragenPage() {
                   <SignaturePad onSave={(s) => { 
                     setSignature(s); 
                     setFieldErrors(prev => ({ ...prev, signature: "" }));
-                    next(); 
+                    // Directly advance since state update is async
+                    setStep(8);
+                    window.scrollTo(0, 0);
                   }} />
                   {fieldErrors.signature && <p className="text-red-500 font-bold mt-4">{fieldErrors.signature}</p>}
                 </>
@@ -773,7 +775,7 @@ export default function BeantragenPage() {
                   Unterschrift zurücksetzen
                 </button>
               </div>
-            }
+            )}
           </div>
         </div>
       )}
