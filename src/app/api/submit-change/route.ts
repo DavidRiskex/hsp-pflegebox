@@ -98,13 +98,16 @@ export async function POST(request: Request) {
         host: process.env.SMTP_HOST,
         port: port,
         secure: port === 465, 
+        pool: true,
         auth: {
           user: process.env.SMTP_USER,
           pass: process.env.SMTP_PASS,
         },
         tls: {
           rejectUnauthorized: false
-        }
+        },
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
       });
 
       // Send to customer

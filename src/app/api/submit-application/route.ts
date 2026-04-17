@@ -121,14 +121,17 @@ export async function POST(request: Request) {
       const transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST,
         port: port,
-        secure: port === 465, // true for 465, false for 587
+        secure: port === 465, 
+        pool: true, // Use pooling for better performance in serverless
         auth: {
           user: process.env.SMTP_USER,
           pass: process.env.SMTP_PASS,
         },
         tls: {
           rejectUnauthorized: false
-        }
+        },
+        connectionTimeout: 10000, // 10 seconds
+        greetingTimeout: 10000, 
       });
 
       const fullName = `${form.firstName} ${form.lastName}`.trim();
