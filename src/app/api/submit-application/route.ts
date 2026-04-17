@@ -1,19 +1,9 @@
 import { NextResponse } from "next/server";
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import { PRODUCTS, TOTAL_BUDGET } from "../../../lib/products";
 import { generateOrderPdf } from "../../../lib/pdfGenerator";
 
 export async function POST(request: Request) {
-  const apiKey = process.env.RESEND_API_KEY;
-  
-  if (!apiKey) {
-    console.error("❌ Kritischer Fehler: RESEND_API_KEY ist nicht gesetzt!");
-    return NextResponse.json({ 
-      error: "Konfigurationsfehler: API Key fehlt. Bitte prüfe die Vercel Umgebungsvariablen."
-    }, { status: 500 });
-  }
-
-  const resend = new Resend(apiKey);
   try {
     const body = await request.json();
     const { form, cart, wantsBedMat, deliveryType, intervalType, hasProvider, signature } = body;
@@ -125,52 +115,59 @@ export async function POST(request: Request) {
       <p><em>(Siehe angehängtes PDF für den ausgefüllten Bestellbogen)</em></p>
     `;
 
-    if (process.env.RESEND_API_KEY) {
+    if (process.env.SMTP_HOST) {
+      const port = Number(process.env.SMTP_PORT) || 587;
+      const transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port: port,
+        secure: port === 465,
+        pool: true,
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        },
+        tls: {
+          rejectUnauthorized: false
+        },
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+      });
+
       const fullName = `${form.firstName} ${form.lastName}`.trim();
       const adminEmail = process.env.ADMIN_EMAIL || 'hsppflegetest@gmail.com';
 
-      console.log(`Versuche E-Mails via Resend zu senden (Admin: ${adminEmail}, Kunde: ${form.email})...`);
+      const attachments = pdfBuffer ? [{
+        filename: `Bestellbogen_${fullName.replace(/\s+/g, '_')}.pdf`,
+        content: pdfBuffer,
+        contentType: 'application/pdf'
+      }] : [];
 
       // 1. Send to Customer
-      const customerRes = await resend.emails.send({
-        from: 'HSP Pflegebox <onboarding@resend.dev>',
+      await transporter.sendMail({
+        from: `"HSP Pflegebox" <${process.env.SMTP_USER}>`,
         to: form.email,
-        subject: 'Bestellbestätigung Ihrer HSP-Pflegebox',
+        subject: "Bestellbestätigung Ihrer HSP-Pflegebox",
         html: customerHtml,
       });
 
-      if (customerRes.error) {
-        console.error("❌ Resend Fehler (Kunde):", customerRes.error);
-      } else {
-        console.log("✅ Resend Erfolg (Kunde):", customerRes.data);
-      }
-
-      // 2. Send to Admin (with PDF)
-      const adminMailOptions: any = {
-        from: 'HSP Website <onboarding@resend.dev>',
+      // 2. Send to Admin
+      await transporter.sendMail({
+        from: `"HSP Pflegebox Website" <${process.env.SMTP_USER}>`,
         to: adminEmail,
         subject: `Neuer Antrag: ${fullName}`,
         html: teamHtml,
-      };
+        attachments
+      });
 
-      if (pdfBuffer) {
-        adminMailOptions.attachments = [{
-          filename: `Bestellbogen_${fullName.replace(/\s+/g, '_')}.pdf`,
-          content: pdfBuffer,
-        }];
-      }
-
-      const adminRes = await resend.emails.send(adminMailOptions);
-      if (adminRes.error) {
-        console.error("❌ Resend Fehler (Admin):", adminRes.error);
-      } else {
-        console.log("✅ Resend Erfolg (Admin):", adminRes.data);
-      }
-    } else {
-      console.error("❌ RESEND_API_KEY fehlt in den Umgebungsvariablen!");
+      console.log("✅ Emails via SMTP gesendet.");
     }
 
     return NextResponse.json({ success: true }, { status: 200 });
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}
   } catch (err) {
     console.error(err);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

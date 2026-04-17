@@ -1,19 +1,9 @@
 import { NextResponse } from "next/server";
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import { PRODUCTS } from "../../../lib/products";
 import { generateOrderPdf } from "../../../lib/pdfGenerator";
 
 export async function POST(request: Request) {
-  const apiKey = process.env.RESEND_API_KEY;
-
-  if (!apiKey) {
-    console.error("❌ Kritischer Fehler: RESEND_API_KEY ist nicht gesetzt!");
-    return NextResponse.json({ 
-      error: "Konfigurationsfehler: API Key fehlt. Bitte prüfe die Vercel Umgebungsvariablen."
-    }, { status: 500 });
-  }
-
-  const resend = new Resend(apiKey);
   try {
     const body = await request.json();
     const { form, cart, wantsBedMat, signature } = body;
@@ -102,44 +92,51 @@ export async function POST(request: Request) {
       <ul>${selectedNamesHtml}${bedMatLine}</ul>
     `;
 
-    if (process.env.RESEND_API_KEY) {
-      const fullName = `${form.firstName} ${form.lastName}`.trim();
+    if (process.env.SMTP_HOST) {
+      const port = Number(process.env.SMTP_PORT) || 587;
+      const transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port: port,
+        secure: port === 465,
+        pool: true,
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        },
+        tls: {
+          rejectUnauthorized: false
+        },
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+      });
+
       const adminEmail = process.env.ADMIN_EMAIL || 'hsppflegetest@gmail.com';
 
-      console.log(`Versuche E-Mails (Änderung) via Resend zu senden (Admin: ${adminEmail}, Kunde: ${form.email})...`);
-
       // Send to customer
-      const customerRes = await resend.emails.send({
-        from: 'HSP Pflegebox <onboarding@resend.dev>',
+      await transporter.sendMail({
+        from: `"HSP Pflegebox" <${process.env.SMTP_USER}>`,
         to: form.email,
         subject: "Änderungsbestätigung Ihrer HSP-Pflegebox",
         html: customerHtml,
       });
 
-      if (customerRes.error) {
-        console.error("❌ Resend Fehler (Kunde - Änderung):", customerRes.error);
-      } else {
-        console.log("✅ Resend Erfolg (Kunde - Änderung):", customerRes.data);
-      }
-
       // Send to admin
-      const adminRes = await resend.emails.send({
-        from: 'HSP Website <onboarding@resend.dev>',
+      await transporter.sendMail({
+        from: `"HSP Pflegebox Website" <${process.env.SMTP_USER}>`,
         to: adminEmail,
-        subject: `Änderung Pflegebox: ${fullName}`,
+        subject: `Änderung Pflegebox: ${form.firstName} ${form.lastName}`,
         html: teamHtml,
       });
       
-      if (adminRes.error) {
-        console.error("❌ Resend Fehler (Admin - Änderung):", adminRes.error);
-      } else {
-        console.log("✅ Resend Erfolg (Admin - Änderung):", adminRes.data);
-      }
-    } else {
-      console.error("❌ RESEND_API_KEY fehlt in den Umgebungsvariablen!");
+      console.log("✅ Emails (Change) via SMTP gesendet.");
     }
 
     return NextResponse.json({ success: true }, { status: 200 });
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}
   } catch (err) {
     console.error(err);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
