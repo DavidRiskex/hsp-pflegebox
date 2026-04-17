@@ -4,7 +4,17 @@ import { PRODUCTS } from "../../../lib/products";
 import { generateOrderPdf } from "../../../lib/pdfGenerator";
 
 export async function POST(request: Request) {
-  const resend = new Resend(process.env.RESEND_API_KEY);
+  const apiKey = process.env.RESEND_API_KEY;
+
+  if (!apiKey) {
+    console.error("❌ Kritischer Fehler: RESEND_API_KEY ist nicht gesetzt!");
+    return NextResponse.json({ 
+      error: "Konfigurationsfehler: API Key fehlt. Bitte prüfe die Vercel Umgebungsvariablen.",
+      details: "Variable 'RESEND_API_KEY' wurde nicht gefunden."
+    }, { status: 500 });
+  }
+
+  const resend = new Resend(apiKey);
   try {
     const body = await request.json();
     const { form, cart, wantsBedMat, signature } = body;
