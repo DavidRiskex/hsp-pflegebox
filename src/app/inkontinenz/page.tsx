@@ -34,23 +34,43 @@ const FEATURED_PRODUCTS = [
 export default function InkontinenzPage() {
   const [submitted, setSubmitted] = useState(false);
   const [file, setFile] = useState<File | null>(null);
-  const [formData, setFormData] = useState({ name: "", phone: "", timeSlot: "" });
+  const [formData, setFormData] = useState({ firstName: "", lastName: "", phone: "", timeSlot: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  const scrollToError = (fieldId: string) => {
+    setTimeout(() => {
+      const element = document.getElementById(fieldId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
+        element.focus();
+      }
+    }, 100);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.phone || !file) {
-      alert("Bitte füllen Sie alle Pflichtfelder aus und laden Sie ein Rezept hoch.");
+    const errors: Record<string, string> = {};
+    if (!formData.firstName.trim()) errors.firstName = "Vorname fehlt";
+    if (!formData.lastName.trim()) errors.lastName = "Nachname fehlt";
+    if (!formData.phone.trim()) errors.phone = "Telefonnummer fehlt";
+    if (!file) errors.file = "Rezept fehlt";
+
+    setFieldErrors(errors);
+    const firstError = Object.keys(errors)[0];
+    if (firstError) {
+      scrollToError(firstError === "file" ? "fileInput" : firstError);
       return;
     }
     
     setIsSubmitting(true);
     try {
       const data = new FormData();
-      data.append("name", formData.name);
+      data.append("firstName", formData.firstName);
+      data.append("lastName", formData.lastName);
       data.append("phone", formData.phone);
       data.append("timeSlot", formData.timeSlot);
-      data.append("file", file);
+      data.append("file", file!);
 
       const res = await fetch("/api/submit-inkontinenz", {
         method: "POST",
@@ -81,7 +101,7 @@ export default function InkontinenzPage() {
             </div>
             <h2 className="text-4xl lg:text-5xl font-extrabold mb-6 tracking-tight font-headline text-on-surface">Vielen Dank!</h2>
             <p className="text-on-surface-variant text-xl mb-12 max-w-2xl mx-auto leading-relaxed">
-              Ihre Rezept-Übermittlung und Daten sind bei uns eingegangen. Unsere Fachabteilung wird Ihr Rezept prüfen und sich zur persönlichen Beratung bei Ihnen melden.
+              Hallo <strong>{formData.firstName} {formData.lastName}</strong>, Ihre Rezept-Übermittlung ist bei uns eingegangen. Unsere Fachabteilung wird Ihr Rezept prüfen und sich zur persönlichen Beratung bei Ihnen melden.
             </p>
             <Link href="/" className="bg-primary text-on-primary px-10 py-5 rounded-2xl font-bold text-lg shadow-xl hover:shadow-primary/30 transition-all hover:scale-105 inline-block">
               Zurück zur Startseite
@@ -121,40 +141,72 @@ export default function InkontinenzPage() {
                 <form onSubmit={handleSubmit} className="space-y-8">
                   {/* File Upload Placeholder */}
                   <div 
-                    onClick={() => document.getElementById("fileInput")?.click()}
-                    className={`group border-2 border-dashed rounded-[2rem] p-12 text-center transition-all cursor-pointer ${file ? "bg-primary/5 border-primary" : "border-surface-variant/20 hover:border-primary/50"}`}
+                    id="fileInput"
+                    onClick={() => document.getElementById("fileInputReal")?.click()}
+                    className={`group border-2 border-dashed rounded-[2rem] p-12 text-center transition-all cursor-pointer ${file ? "bg-primary/5 border-primary" : (fieldErrors.file ? "bg-red-50 border-red-500" : "border-surface-variant/20 hover:border-primary/50")}`}
                   >
-                    <input id="fileInput" type="file" accept="image/*,.pdf" className="hidden" onChange={e => setFile(e.target.files?.[0] || null)} />
+                    <input id="fileInputReal" type="file" accept="image/*,.pdf" className="hidden" onChange={e => {
+                      setFile(e.target.files?.[0] || null);
+                      if (fieldErrors.file) setFieldErrors(prev => ({ ...prev, file: "" }));
+                    }} />
                     <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                       <span className="material-symbols-outlined text-4xl text-primary">{file ? "task" : "add_a_photo"}</span>
                     </div>
                     <p className="text-xl font-bold text-on-surface mb-2">{file ? file.name : "Klicken zum Hochladen"}</p>
                     <p className="text-sm text-on-surface-variant uppercase tracking-widest font-bold">Rezept (Foto oder PDF)</p>
+                    {fieldErrors.file && <p className="text-red-500 text-sm mt-4 font-bold">{fieldErrors.file}</p>}
                   </div>
 
                   <div className="grid md:grid-cols-2 gap-8">
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-on-surface-variant uppercase tracking-widest ml-2">Vollständiger Name*</label>
-                      <input 
-                        required
-                        type="text" 
-                        placeholder="Max Mustermann"
-                        className="w-full bg-surface-bright border-surface-variant/10 rounded-2xl py-5 px-6 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-lg"
-                        value={formData.name}
-                        onChange={(e) => setFormData({...formData, name: e.target.value})}
-                      />
+                       <label className="text-xs font-bold text-on-surface-variant uppercase tracking-widest ml-2">Vorname*</label>
+                       <input 
+                         id="firstName"
+                         required
+                         type="text" 
+                         placeholder="Max"
+                         className={`w-full bg-surface-bright border-2 rounded-2xl py-5 px-6 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-lg ${fieldErrors.firstName ? 'border-red-500' : 'border-surface-variant/10'}`}
+                         value={formData.firstName}
+                         onChange={(e) => {
+                           setFormData({...formData, firstName: e.target.value});
+                           if (fieldErrors.firstName) setFieldErrors(prev => ({ ...prev, firstName: "" }));
+                         }}
+                       />
+                       {fieldErrors.firstName && <p className="text-red-500 text-[10px] mt-1 font-bold ml-2">{fieldErrors.firstName}</p>}
                     </div>
                     <div className="space-y-2">
-                      <label className="text-xs font-bold text-on-surface-variant uppercase tracking-widest ml-2">Telefonnummer*</label>
-                      <input 
-                        required
-                        type="tel" 
-                        placeholder="Für Ihre Beratung"
-                        className="w-full bg-surface-bright border-surface-variant/10 rounded-2xl py-5 px-6 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-lg"
-                        value={formData.phone}
-                        onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                      />
+                       <label className="text-xs font-bold text-on-surface-variant uppercase tracking-widest ml-2">Nachname*</label>
+                       <input 
+                         id="lastName"
+                         required
+                         type="text" 
+                         placeholder="Mustermann"
+                         className={`w-full bg-surface-bright border-2 rounded-2xl py-5 px-6 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-lg ${fieldErrors.lastName ? 'border-red-500' : 'border-surface-variant/10'}`}
+                         value={formData.lastName}
+                         onChange={(e) => {
+                           setFormData({...formData, lastName: e.target.value});
+                           if (fieldErrors.lastName) setFieldErrors(prev => ({ ...prev, lastName: "" }));
+                         }}
+                       />
+                        {fieldErrors.lastName && <p className="text-red-500 text-[10px] mt-1 font-bold ml-2">{fieldErrors.lastName}</p>}
                     </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-on-surface-variant uppercase tracking-widest ml-2">Telefonnummer*</label>
+                    <input 
+                      id="phone"
+                      required
+                      type="tel" 
+                      placeholder="Für Ihre Beratung"
+                      className={`w-full bg-surface-bright border-2 rounded-2xl py-5 px-6 focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-lg ${fieldErrors.phone ? 'border-red-500' : 'border-surface-variant/10'}`}
+                      value={formData.phone}
+                      onChange={(e) => {
+                        setFormData({...formData, phone: e.target.value});
+                        if (fieldErrors.phone) setFieldErrors(prev => ({ ...prev, phone: "" }));
+                      }}
+                    />
+                    {fieldErrors.phone && <p className="text-red-500 text-[10px] mt-1 font-bold ml-2">{fieldErrors.phone}</p>}
                   </div>
 
                   <div className="space-y-2">

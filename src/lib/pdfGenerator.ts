@@ -116,7 +116,7 @@ export async function generateOrderPdf(
   };
 
   // ── 1. Map Form Data ──
-  const fullName = form.name || "";
+  const fullName = `${form.firstName || ""} ${form.lastName || ""}`.trim();
   const address1 = `${form.street || ""} ${form.streetNo || ""}`;
   const zipCity = `${form.zip || ""} ${form.city || ""}`;
   

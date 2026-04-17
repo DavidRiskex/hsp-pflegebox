@@ -24,7 +24,7 @@ export default function BeantragenPage() {
 
   // Form data
   const [form, setForm] = useState({
-    name: "", dob: "", street: "", streetNo: "", zip: "", city: "",
+    firstName: "", lastName: "", dob: "", street: "", streetNo: "", zip: "", city: "",
     insurance: "", insuranceType: "gesetzlich", insuranceNo: "",
     phone: "", email: "",
     familyName: "", familyStreet: "", familyStreetNo: "", familyZip: "", familyCity: "",
@@ -34,6 +34,18 @@ export default function BeantragenPage() {
     oldContractEnd: "",
     newContractStart: "",
   });
+
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  const scrollToError = (fieldId: string) => {
+    setTimeout(() => {
+      const element = document.getElementById(fieldId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
+        element.focus();
+      }
+    }, 100);
+  };
 
   const currentBudget = Object.entries(cart).reduce((sum, [id, item]) => {
     const product = PRODUCTS.find((p) => p.id === id);
@@ -91,20 +103,38 @@ export default function BeantragenPage() {
   // Validate current step before advancing
   const validateStep = (): boolean => {
     setValidationError(null);
+    const errors: Record<string, string> = {};
+    
     if (step === 1 && Object.keys(cart).length === 0) {
       setValidationError("Bitte wählen Sie mindestens ein Produkt aus.");
       return false;
     }
+
     if (step === 3) {
-      if (!form.name.trim()) { setValidationError("Bitte geben Sie Ihren Namen ein."); return false; }
-      if (!form.dob) { setValidationError("Bitte geben Sie Ihr Geburtsdatum ein."); return false; }
-      if (!form.street.trim()) { setValidationError("Bitte geben Sie Ihre Straße ein."); return false; }
-      if (!form.zip.trim() || !form.city.trim()) { setValidationError("Bitte geben Sie PLZ und Ort ein."); return false; }
+      if (!form.firstName.trim()) errors.firstName = "Bitte Vorname eingeben";
+      if (!form.lastName.trim()) errors.lastName = "Bitte Nachname eingeben";
+      if (!form.dob) errors.dob = "Geburtsdatum fehlt";
+      if (!form.street.trim()) errors.street = "Straße fehlt";
+      if (!form.streetNo.trim()) errors.streetNo = "Nr.";
+      if (!form.zip.trim()) errors.zip = "PLZ fehlt";
+      if (!form.city.trim()) errors.city = "Ort fehlt";
+      if (!form.phone.trim()) errors.phone = "Telefonnummer fehlt";
+      if (form.email && !form.email.includes("@")) errors.email = "Ungültige E-Mail Adresse";
     }
+
     if (step === 4) {
-      if (!form.insurance.trim()) { setValidationError("Bitte geben Sie Ihre Krankenkasse an."); return false; }
-      if (!form.insuranceNo.trim()) { setValidationError("Bitte geben Sie Ihre Versichertennummer an."); return false; }
+      if (!form.insurance.trim()) errors.insurance = "Bitte Krankenkasse angeben";
+      if (!form.insuranceNo.trim()) errors.insuranceNo = "Versichertennummer fehlt";
     }
+
+    setFieldErrors(errors);
+    
+    const firstErrorField = Object.keys(errors)[0];
+    if (firstErrorField) {
+      scrollToError(firstErrorField);
+      return false;
+    }
+
     return true;
   };
 
@@ -142,7 +172,7 @@ export default function BeantragenPage() {
             </div>
             <h2 className="text-4xl lg:text-5xl font-extrabold mb-6 tracking-tight font-headline text-on-surface">Antrag eingereicht!</h2>
             <p className="text-on-surface-variant text-xl mb-12 max-w-2xl mx-auto">
-              Vielen Dank, <strong>{form.name}</strong>. Wir haben Ihre Daten erhalten und kümmern uns nun um die Beantragung bei der Pflegekasse. Wir haben Ihnen eine Bestätigung per E-Mail gesendet.
+              Vielen Dank, <strong>{form.firstName} {form.lastName}</strong>. Wir haben Ihre Daten erhalten und kümmern uns nun um die Beantragung bei der Pflegekasse. Wir haben Ihnen eine Bestätigung per E-Mail gesendet.
             </p>
             <Link 
               href="/"
@@ -345,66 +375,112 @@ export default function BeantragenPage() {
           <div className="max-w-2xl mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
             <h2 className="text-3xl font-extrabold mb-8 font-headline text-center">Persönliche Angaben</h2>
             <div className="flex flex-col gap-6">
-              <div>
-                <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Name der zu pflegenden Person</label>
-                <input 
-                  type="text" 
-                  className="w-full bg-surface-container-lowest border-2 border-surface-variant/20 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium"
-                  placeholder="Vorname und Nachname"
-                  value={form.name}
-                  onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Vorname</label>
+                  <input 
+                    id="firstName"
+                    type="text" 
+                    className={`w-full bg-surface-container-lowest border-2 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium ${fieldErrors.firstName ? 'border-red-500' : 'border-surface-variant/20'}`}
+                    placeholder="Max"
+                    value={form.firstName}
+                    onChange={e => {
+                      setForm(f => ({ ...f, firstName: e.target.value }));
+                      if (fieldErrors.firstName) setFieldErrors(prev => ({ ...prev, firstName: "" }));
+                    }}
+                  />
+                  {fieldErrors.firstName && <p className="text-red-500 text-[10px] mt-1 font-bold">{fieldErrors.firstName}</p>}
+                </div>
+                <div>
+                  <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Nachname</label>
+                  <input 
+                    id="lastName"
+                    type="text" 
+                    className={`w-full bg-surface-container-lowest border-2 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium ${fieldErrors.lastName ? 'border-red-500' : 'border-surface-variant/20'}`}
+                    placeholder="Mustermann"
+                    value={form.lastName}
+                    onChange={e => {
+                      setForm(f => ({ ...f, lastName: e.target.value }));
+                      if (fieldErrors.lastName) setFieldErrors(prev => ({ ...prev, lastName: "" }));
+                    }}
+                  />
+                  {fieldErrors.lastName && <p className="text-red-500 text-[10px] mt-1 font-bold">{fieldErrors.lastName}</p>}
+                </div>
               </div>
               
               <div>
                 <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Geburtsdatum</label>
                 <input 
+                  id="dob"
                   type="date" 
-                  className="w-full bg-surface-container-lowest border-2 border-surface-variant/20 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium"
+                  className={`w-full bg-surface-container-lowest border-2 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium ${fieldErrors.dob ? 'border-red-500' : 'border-surface-variant/20'}`}
                   value={form.dob}
-                  onChange={e => setForm(f => ({ ...f, dob: e.target.value }))}
+                  onChange={e => {
+                    setForm(f => ({ ...f, dob: e.target.value }));
+                    if (fieldErrors.dob) setFieldErrors(prev => ({ ...prev, dob: "" }));
+                  }}
                 />
+                {fieldErrors.dob && <p className="text-red-500 text-[10px] mt-1 font-bold">{fieldErrors.dob}</p>}
               </div>
 
               <div className="flex flex-row gap-3">
                 <div className="flex-[3]">
                   <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Straße</label>
                   <input 
+                    id="street"
                     type="text" 
-                    className="w-full bg-surface-container-lowest border-2 border-surface-variant/20 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium"
+                    className={`w-full bg-surface-container-lowest border-2 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium ${fieldErrors.street ? 'border-red-500' : 'border-surface-variant/20'}`}
                     value={form.street}
-                    onChange={e => setForm(f => ({ ...f, street: e.target.value }))}
+                    onChange={e => {
+                      setForm(f => ({ ...f, street: e.target.value }));
+                      if (fieldErrors.street) setFieldErrors(prev => ({ ...prev, street: "" }));
+                    }}
                   />
+                  {fieldErrors.street && <p className="text-red-500 text-[10px] mt-1 font-bold">{fieldErrors.street}</p>}
                 </div>
                 <div className="flex-[1]">
                   <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Nr.</label>
                   <input 
+                    id="streetNo"
                     type="text" 
-                    className="w-full bg-surface-container-lowest border-2 border-surface-variant/20 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium"
+                    className={`w-full bg-surface-container-lowest border-2 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium ${fieldErrors.streetNo ? 'border-red-500' : 'border-surface-variant/20'}`}
                     value={form.streetNo}
-                    onChange={e => setForm(f => ({ ...f, streetNo: e.target.value }))}
+                    onChange={e => {
+                      setForm(f => ({ ...f, streetNo: e.target.value }));
+                      if (fieldErrors.streetNo) setFieldErrors(prev => ({ ...prev, streetNo: "" }));
+                    }}
                   />
                 </div>
               </div>
 
               <div className="flex flex-row gap-3">
-                <div className="flex-[1]">
+                <div className="w-1/3 sm:flex-[1]">
                   <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">PLZ</label>
                   <input 
+                    id="zip"
                     type="text" 
-                    className="w-full bg-surface-container-lowest border-2 border-surface-variant/20 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium"
+                    className={`w-full bg-surface-container-lowest border-2 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium ${fieldErrors.zip ? 'border-red-500' : 'border-surface-variant/20'}`}
                     value={form.zip}
-                    onChange={e => setForm(f => ({ ...f, zip: e.target.value }))}
+                    onChange={e => {
+                      setForm(f => ({ ...f, zip: e.target.value }));
+                      if (fieldErrors.zip) setFieldErrors(prev => ({ ...prev, zip: "" }));
+                    }}
                   />
+                  {fieldErrors.zip && <p className="text-red-500 text-[10px] mt-1 font-bold">{fieldErrors.zip}</p>}
                 </div>
-                <div className="flex-[3]">
+                <div className="w-2/3 sm:flex-[3]">
                   <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Ort</label>
                   <input 
+                    id="city"
                     type="text" 
-                    className="w-full bg-surface-container-lowest border-2 border-surface-variant/20 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium"
+                    className={`w-full bg-surface-container-lowest border-2 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium ${fieldErrors.city ? 'border-red-500' : 'border-surface-variant/20'}`}
                     value={form.city}
-                    onChange={e => setForm(f => ({ ...f, city: e.target.value }))}
+                    onChange={e => {
+                      setForm(f => ({ ...f, city: e.target.value }));
+                      if (fieldErrors.city) setFieldErrors(prev => ({ ...prev, city: "" }));
+                    }}
                   />
+                  {fieldErrors.city && <p className="text-red-500 text-[10px] mt-1 font-bold">{fieldErrors.city}</p>}
                 </div>
               </div>
 
@@ -412,22 +488,32 @@ export default function BeantragenPage() {
                 <div className="flex-1">
                   <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Telefonnummer</label>
                   <input 
+                    id="phone"
                     type="tel" 
-                    className="w-full bg-surface-container-lowest border-2 border-surface-variant/20 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium"
+                    className={`w-full bg-surface-container-lowest border-2 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium ${fieldErrors.phone ? 'border-red-500' : 'border-surface-variant/20'}`}
                     placeholder="Für Rückfragen"
                     value={form.phone}
-                    onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
+                    onChange={e => {
+                      setForm(f => ({ ...f, phone: e.target.value }));
+                      if (fieldErrors.phone) setFieldErrors(prev => ({ ...prev, phone: "" }));
+                    }}
                   />
+                  {fieldErrors.phone && <p className="text-red-500 text-[10px] mt-1 font-bold">{fieldErrors.phone}</p>}
                 </div>
                 <div className="flex-1">
                   <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">E-Mail</label>
                   <input 
+                    id="email"
                     type="email" 
-                    className="w-full bg-surface-container-lowest border-2 border-surface-variant/20 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium"
-                    placeholder="Ihre E-Mail für die Bestätigung"
+                    className={`w-full bg-surface-container-lowest border-2 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium ${fieldErrors.email ? 'border-red-500' : 'border-surface-variant/20'}`}
+                    placeholder="Bestätigungsmail"
                     value={form.email}
-                    onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                    onChange={e => {
+                      setForm(f => ({ ...f, email: e.target.value }));
+                      if (fieldErrors.email) setFieldErrors(prev => ({ ...prev, email: "" }));
+                    }}
                   />
+                  {fieldErrors.email && <p className="text-red-500 text-[10px] mt-1 font-bold">{fieldErrors.email}</p>}
                 </div>
               </div>
             </div>

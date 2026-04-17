@@ -18,8 +18,20 @@ export default function AendernPage() {
   const [submitted, setSubmitted] = useState(false);
 
   const [form, setForm] = useState({
-    name: "", dob: "", phone: "", email: "",
+    firstName: "", lastName: "", dob: "", phone: "", email: "",
   });
+
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  const scrollToError = (fieldId: string) => {
+    setTimeout(() => {
+      const element = document.getElementById(fieldId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
+        element.focus();
+      }
+    }, 100);
+  };
 
   const currentBudget = Object.entries(cart).reduce((sum, [id, item]) => {
     const product = PRODUCTS.find((p) => p.id === id);
@@ -67,6 +79,20 @@ export default function AendernPage() {
   const prev = () => { setStep((s) => Math.max(s - 1, 1)); window.scrollTo(0, 0); };
 
   const handleSubmit = async () => {
+    const errors: Record<string, string> = {};
+    if (!form.firstName.trim()) errors.firstName = "Vorname fehlt";
+    if (!form.lastName.trim()) errors.lastName = "Nachname fehlt";
+    if (!form.dob) errors.dob = "Geburtsdatum fehlt";
+    if (!form.phone.trim()) errors.phone = "Telefonnummer fehlt";
+    if (form.email && !form.email.includes("@")) errors.email = "Ungültige E-Mail";
+
+    setFieldErrors(errors);
+    const firstError = Object.keys(errors)[0];
+    if (firstError) {
+      scrollToError(firstError);
+      return;
+    }
+
     setSubmitted(true);
     try {
       await fetch("/api/submit-change", {
@@ -88,7 +114,7 @@ export default function AendernPage() {
             </div>
             <h2 className="text-4xl lg:text-5xl font-extrabold mb-6 tracking-tight font-headline">Änderung erhalten!</h2>
             <p className="text-on-surface-variant text-xl mb-12 max-w-2xl mx-auto">
-              Vielen Dank, <strong>{form.name}</strong>. Wir haben Ihre neue Zusammenstellung erhalten und passen Ihre Lieferungen zum nächstmöglichen Termin an.
+              Vielen Dank, <strong>{form.firstName} {form.lastName}</strong>. Wir haben Ihre neue Zusammenstellung erhalten und passen Ihre Lieferungen zum nächstmöglichen Termin an.
             </p>
             <Link href="/" className="bg-primary text-on-primary px-10 py-5 rounded-xl font-bold text-lg shadow-lg hover:shadow-primary/20 transition-all inline-block">
               Zurück zur Startseite
@@ -191,21 +217,91 @@ export default function AendernPage() {
         {/* Step 3: Bestätigung */}
         {step === 3 && (
           <div className="max-w-xl mx-auto w-full py-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <h2 className="text-3xl font-extrabold mb-8 font-headline text-center uppercase tracking-tight">Bestätigung</h2>
+            <h2 className="text-3xl font-extrabold mb-8 font-headline text-center uppercase tracking-tight text-on-surface">Daten prüfen</h2>
             <div className="space-y-6">
-              <div>
-                <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Vollständiger Name</label>
-                <input type="text" className="w-full bg-white border-2 border-surface-variant/20 rounded-xl px-4 py-4" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Vorname</label>
+                  <input 
+                    id="firstName"
+                    type="text" 
+                    className={`w-full bg-white border-2 rounded-xl px-4 py-4 transition-all ${fieldErrors.firstName ? 'border-red-500' : 'border-surface-variant/20'}`} 
+                    value={form.firstName} 
+                    onChange={e => {
+                      setForm(f => ({ ...f, firstName: e.target.value }));
+                      if (fieldErrors.firstName) setFieldErrors(prev => ({ ...prev, firstName: "" }));
+                    }} 
+                  />
+                  {fieldErrors.firstName && <p className="text-red-500 text-[10px] mt-1 font-bold">{fieldErrors.firstName}</p>}
+                </div>
+                <div>
+                  <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Nachname</label>
+                  <input 
+                    id="lastName"
+                    type="text" 
+                    className={`w-full bg-white border-2 rounded-xl px-4 py-4 transition-all ${fieldErrors.lastName ? 'border-red-500' : 'border-surface-variant/20'}`} 
+                    value={form.lastName} 
+                    onChange={e => {
+                      setForm(f => ({ ...f, lastName: e.target.value }));
+                      if (fieldErrors.lastName) setFieldErrors(prev => ({ ...prev, lastName: "" }));
+                    }} 
+                  />
+                   {fieldErrors.lastName && <p className="text-red-500 text-[10px] mt-1 font-bold">{fieldErrors.lastName}</p>}
+                </div>
               </div>
+
               <div>
                 <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Geburtsdatum</label>
-                <input type="date" className="w-full bg-white border-2 border-surface-variant/20 rounded-xl px-4 py-4" value={form.dob} onChange={e => setForm(f => ({ ...f, dob: e.target.value }))} />
+                <input 
+                  id="dob"
+                  type="date" 
+                  className={`w-full bg-white border-2 rounded-xl px-4 py-4 transition-all ${fieldErrors.dob ? 'border-red-500' : 'border-surface-variant/20'}`} 
+                  value={form.dob} 
+                  onChange={e => {
+                    setForm(f => ({ ...f, dob: e.target.value }));
+                    if (fieldErrors.dob) setFieldErrors(prev => ({ ...prev, dob: "" }));
+                  }} 
+                />
+                 {fieldErrors.dob && <p className="text-red-500 text-[10px] mt-1 font-bold">{fieldErrors.dob}</p>}
               </div>
-              <div>
-                <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">E-Mail für Bestätigung</label>
-                <input type="email" className="w-full bg-white border-2 border-surface-variant/20 rounded-xl px-4 py-4" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex-1">
+                  <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Telefonnummer</label>
+                  <input 
+                    id="phone"
+                    type="tel" 
+                    className={`w-full bg-white border-2 rounded-xl px-4 py-4 transition-all ${fieldErrors.phone ? 'border-red-500' : 'border-surface-variant/20'}`} 
+                    value={form.phone} 
+                    onChange={e => {
+                      setForm(f => ({ ...f, phone: e.target.value }));
+                      if (fieldErrors.phone) setFieldErrors(prev => ({ ...prev, phone: "" }));
+                    }} 
+                  />
+                  {fieldErrors.phone && <p className="text-red-500 text-[10px] mt-1 font-bold">{fieldErrors.phone}</p>}
+                </div>
+                <div className="flex-1">
+                  <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">E-Mail</label>
+                  <input 
+                    id="email"
+                    type="email" 
+                    className={`w-full bg-white border-2 rounded-xl px-4 py-4 transition-all ${fieldErrors.email ? 'border-red-500' : 'border-surface-variant/20'}`} 
+                    value={form.email} 
+                    onChange={e => {
+                      setForm(f => ({ ...f, email: e.target.value }));
+                      if (fieldErrors.email) setFieldErrors(prev => ({ ...prev, email: "" }));
+                    }} 
+                  />
+                   {fieldErrors.email && <p className="text-red-500 text-[10px] mt-1 font-bold">{fieldErrors.email}</p>}
+                </div>
               </div>
-              <button onClick={next} className="w-full bg-primary text-on-primary py-6 rounded-2xl font-bold text-xl shadow-xl mt-8">Weiter zur Unterschrift</button>
+              
+              <button 
+                onClick={handleSubmit} 
+                className="w-full bg-primary text-on-primary py-6 rounded-2xl font-bold text-xl shadow-xl mt-8 hover:scale-[1.02] transition-transform active:scale-95"
+              >
+                Bestätigen & Unterschreiben
+              </button>
             </div>
           </div>
         )}

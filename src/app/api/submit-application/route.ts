@@ -63,7 +63,7 @@ export async function POST(request: Request) {
             <h1 class="logo-text">HSP <span style="opacity: 0.8">PFLEGESHOP</span></h1>
           </div>
           <div class="content">
-            <p class="greeting">Sehr geehrte/r ${form.name},</p>
+            <p class="greeting">Sehr geehrte/r ${form.firstName} ${form.lastName},</p>
             <p>vielen Dank für Ihre Bestellung der Pflegebox auf unserer Website! Wir haben Ihre Anfrage erfolgreich erhalten und möchten uns herzlich für Ihr Vertrauen in uns bedanken.</p>
             
             <div class="info-box">
@@ -100,7 +100,7 @@ export async function POST(request: Request) {
 
     const teamHtml = `
       <h2>Neuer Pflegebox-Antrag</h2>
-      <p><strong>Name:</strong> ${form.name}</p>
+      <p><strong>Name:</strong> ${form.firstName} ${form.lastName}</p>
       <p><strong>Geburtsdatum:</strong> ${form.dob}</p>
       <p><strong>Adresse:</strong> ${form.street} ${form.streetNo}, ${form.zip} ${form.city}</p>
       <p><strong>Versicherung:</strong> ${form.insurance} (${form.insuranceType}) / <strong>Versichertennummer:</strong> ${form.insuranceNo}</p>

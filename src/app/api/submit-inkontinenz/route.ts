@@ -4,12 +4,15 @@ import nodemailer from "nodemailer";
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
-    const name = formData.get("name") as string;
+    const firstName = formData.get("firstName") as string;
+    const lastName = formData.get("lastName") as string;
     const phone = formData.get("phone") as string;
     const timeSlot = formData.get("timeSlot") as string;
     const file = formData.get("file") as File;
 
-    if (!file || !name || !phone) {
+    const fullName = `${firstName} ${lastName}`.trim();
+
+    if (!file || !firstName || !lastName || !phone) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
@@ -29,10 +32,10 @@ export async function POST(request: Request) {
       const mailOptions = {
         from: `"HSP Pflegeshop Website" <${process.env.SMTP_USER}>`,
         to: process.env.ADMIN_EMAIL,
-        subject: `Inkontinenz Rezept-Upload: ${name}`,
+        subject: `Inkontinenz Rezept-Upload: ${fullName}`,
         html: `
           <h2>Neuer Inkontinenz-Rezept-Upload</h2>
-          <p><strong>Name des Kunden:</strong> ${name}</p>
+          <p><strong>Name des Kunden:</strong> ${fullName}</p>
           <p><strong>Telefonnummer für Beratung:</strong> ${phone}</p>
           <p><strong>Gewünschtes Zeitfenster:</strong> ${timeSlot || "Nicht angegeben"}</p>
           <p>Das hochgeladene Rezept ist dieser E-Mail als Anhang beigefügt.</p>

@@ -56,7 +56,7 @@ export async function POST(request: Request) {
             <h1 class="logo-text">HSP <span style="opacity: 0.8">PFLEGESHOP</span></h1>
           </div>
           <div class="content">
-            <p class="greeting">Sehr geehrte/r ${form.name},</p>
+            <p class="greeting">Sehr geehrte/r ${form.firstName} ${form.lastName},</p>
             <p>vielen Dank für die Einreichung der Änderung Ihrer Pflegebox. Wir haben Ihre Anfrage erhalten und werden diese umgehend bearbeiten.</p>
             
             <div class="info-box">
@@ -82,8 +82,8 @@ export async function POST(request: Request) {
     `;
 
     const teamHtml = `
-      <h2>Pflegebox-Änderung eingegangen</h2>
-      <p><strong>Name:</strong> ${form.name}</p>
+      <h2>Änderung Pflegebox-Antrag</h2>
+      <p><strong>Name:</strong> ${form.firstName} ${form.lastName}</p>
       <p><strong>Geburtsdatum:</strong> ${form.dob}</p>
       <p><strong>Telefon:</strong> ${form.phone}</p>
       <p><strong>E-Mail:</strong> ${form.email}</p>
