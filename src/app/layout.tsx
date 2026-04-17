@@ -53,8 +53,8 @@ export default function RootLayout({
             {/* Column 1: Brand */}
             <div>
               <div className="flex items-center gap-2 mb-6">
-                <div className="w-12 h-12 rounded-full overflow-hidden bg-white p-1">
-                  <Image src="/logo.jpg" alt="Logo" width={48} height={48} className="object-contain" />
+                <div className="w-16 h-16 rounded-full overflow-hidden bg-white shadow-lg flex items-center justify-center p-[2px]">
+                  <Image src="/logo-round.jpg" alt="HSP Pflegebox Logo" width={64} height={64} className="object-cover rounded-full" />
                 </div>
               </div>
               <p className="max-w-xs leading-relaxed">
@@ -101,19 +101,7 @@ export default function RootLayout({
             <p>Premium Care Excellence</p>
           </div>
         </footer>
-        {/* Floating WhatsApp CTA */}
-        <a
-          href="https://wa.me/4941016961090"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Jetzt per WhatsApp kontaktieren"
-          className="fixed bottom-8 right-8 z-50 flex items-center gap-3 bg-green-500 text-white px-5 py-4 rounded-full shadow-2xl shadow-green-500/40 hover:scale-105 hover:shadow-green-400/50 transition-all duration-300 group"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6 fill-current" viewBox="0 0 24 24">
-            <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.38 1.26 4.79L2 22l5.46-1.43c1.36.73 2.91 1.15 4.58 1.15 5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2zm5.52 14.12c-.23.65-1.35 1.24-1.85 1.32-.5.08-1.13.12-1.82-.12-.42-.14-.96-.33-1.66-.65C9.91 15.7 7.88 13.16 7.72 12.95c-.16-.2-1.3-1.73-1.3-3.3s.82-2.35 1.12-2.67c.3-.32.65-.4.87-.4h.62c.2 0 .47-.08.74.56.28.65.95 2.32 1.03 2.49.08.16.13.35.03.56-.1.2-.15.32-.3.5-.16.18-.33.4-.47.54-.16.16-.33.33-.14.65.2.32.87 1.43 1.87 2.32 1.28 1.14 2.37 1.5 2.7 1.67.32.16.5.13.68-.08.17-.2.72-.85.91-1.14.2-.3.4-.25.67-.15.28.1 1.77.84 2.07.99.3.15.5.23.57.35.08.12.08.66-.15 1.31z"/>
-          </svg>
-          <span className="font-bold text-sm">WhatsApp</span>
-        </a>
+        {/* Floating WhatsApp CTA Removed */}
       </body>
     </html>
   );

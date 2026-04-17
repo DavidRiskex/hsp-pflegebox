@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -34,8 +35,8 @@ export default function Navbar() {
       <div className="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center shadow-sm">
-            <span className="text-on-primary font-black text-sm">H</span>
+          <div className="w-10 h-10 rounded-full overflow-hidden bg-white shadow-sm flex items-center justify-center p-[2px]">
+            <Image src="/logo-round.jpg" alt="HSP Logo" width={40} height={40} className="object-cover rounded-full" />
           </div>
           <span className="text-xl font-bold text-on-surface tracking-tight font-headline">
             HSP <span className="text-primary font-extrabold">Pflegeshop</span>
