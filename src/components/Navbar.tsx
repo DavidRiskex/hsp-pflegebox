@@ -34,13 +34,17 @@ export default function Navbar() {
       }`}>
       <div className="flex justify-between items-center px-8 py-4 max-w-7xl mx-auto">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-10 h-10 rounded-full overflow-hidden bg-white shadow-sm flex items-center justify-center p-[2px]">
-            <Image src="/logo-round.jpg" alt="HSP Logo" width={40} height={40} className="object-cover rounded-full" />
+        <Link href="/" className="flex items-center group">
+          <div className="h-10 w-auto overflow-hidden rounded-lg shadow-sm border border-white/20">
+            <Image 
+              src="/logo-nav.jpg" 
+              alt="HSP Pflegeshop" 
+              width={160} 
+              height={40} 
+              className="h-full w-auto object-contain"
+              priority
+            />
           </div>
-          <span className="text-xl font-bold text-on-surface tracking-tight font-headline">
-            HSP <span className="text-primary font-extrabold">Pflegeshop</span>
-          </span>
         </Link>
 
         {/* Desktop Nav */}
