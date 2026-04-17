@@ -773,9 +773,10 @@ export default function BeantragenPage() {
                   Unterschrift zurücksetzen
                 </button>
               </div>
-            )}
+            }
           </div>
-        )}
+        </div>
+      )}
 
         {/* Step 8: Altanbieter & Abschluss */}
         {step === 8 && (
@@ -794,7 +795,6 @@ export default function BeantragenPage() {
                 </select>
               </div>
 
-              {hasProvider === "yes" && (
               {hasProvider === "yes" && (
                 <div className="animate-in zoom-in-95 duration-300 space-y-4">
                   <div>
