@@ -31,6 +31,9 @@ export default function SignaturePad({ onSave, onClear }: SignaturePadProps) {
     if (!canvas) return { x: 0, y: 0 };
 
     const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+
     let clientX, clientY;
 
     if ("touches" in e) {
@@ -42,8 +45,8 @@ export default function SignaturePad({ onSave, onClear }: SignaturePadProps) {
     }
 
     return {
-      x: clientX - rect.left,
-      y: clientY - rect.top,
+      x: (clientX - rect.left) * scaleX,
+      y: (clientY - rect.top) * scaleY,
     };
   };
 

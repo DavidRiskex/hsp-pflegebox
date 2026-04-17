@@ -368,8 +368,8 @@ export default function BeantragenPage() {
         {step === 3 && (
           <div className="max-w-2xl mx-auto w-full animate-in fade-in slide-in-from-bottom-4 duration-500">
             <h2 className="text-3xl font-extrabold mb-8 font-headline text-center">Persönliche Angaben</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="col-span-2">
+            <div className="flex flex-col gap-6">
+              <div>
                 <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Name der zu pflegenden Person</label>
                 <input 
                   type="text" 
@@ -379,6 +379,7 @@ export default function BeantragenPage() {
                   onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
                 />
               </div>
+              
               <div>
                 <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Geburtsdatum</label>
                 <input 
@@ -388,7 +389,8 @@ export default function BeantragenPage() {
                   onChange={e => setForm(f => ({ ...f, dob: e.target.value }))}
                 />
               </div>
-              <div className="flex gap-2 col-span-2">
+
+              <div className="flex flex-row gap-3">
                 <div className="flex-[3]">
                   <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Straße</label>
                   <input 
@@ -398,7 +400,7 @@ export default function BeantragenPage() {
                     onChange={e => setForm(f => ({ ...f, street: e.target.value }))}
                   />
                 </div>
-                <div className="flex-1">
+                <div className="flex-[1]">
                   <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Nr.</label>
                   <input 
                     type="text" 
@@ -408,43 +410,49 @@ export default function BeantragenPage() {
                   />
                 </div>
               </div>
-              <div>
-                <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">PLZ</label>
-                <input 
-                  type="text" 
-                  className="w-full bg-surface-container-lowest border-2 border-surface-variant/20 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium"
-                  value={form.zip}
-                  onChange={e => setForm(f => ({ ...f, zip: e.target.value }))}
-                />
+
+              <div className="flex flex-row gap-3">
+                <div className="flex-[1]">
+                  <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">PLZ</label>
+                  <input 
+                    type="text" 
+                    className="w-full bg-surface-container-lowest border-2 border-surface-variant/20 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium"
+                    value={form.zip}
+                    onChange={e => setForm(f => ({ ...f, zip: e.target.value }))}
+                  />
+                </div>
+                <div className="flex-[3]">
+                  <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Ort</label>
+                  <input 
+                    type="text" 
+                    className="w-full bg-surface-container-lowest border-2 border-surface-variant/20 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium"
+                    value={form.city}
+                    onChange={e => setForm(f => ({ ...f, city: e.target.value }))}
+                  />
+                </div>
               </div>
-              <div>
-                <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Ort</label>
-                <input 
-                  type="text" 
-                  className="w-full bg-surface-container-lowest border-2 border-surface-variant/20 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium"
-                  value={form.city}
-                  onChange={e => setForm(f => ({ ...f, city: e.target.value }))}
-                />
-              </div>
-              <div>
-                <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Telefonnummer</label>
-                <input 
-                  type="tel" 
-                  className="w-full bg-surface-container-lowest border-2 border-surface-variant/20 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium"
-                  placeholder="Für Rückfragen"
-                  value={form.phone}
-                  onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
-                />
-              </div>
-              <div>
-                <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">E-Mail</label>
-                <input 
-                  type="email" 
-                  className="w-full bg-surface-container-lowest border-2 border-surface-variant/20 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium"
-                  placeholder="Ihre E-Mail für die Bestätigung"
-                  value={form.email}
-                  onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-                />
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex-1">
+                  <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Telefonnummer</label>
+                  <input 
+                    type="tel" 
+                    className="w-full bg-surface-container-lowest border-2 border-surface-variant/20 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium"
+                    placeholder="Für Rückfragen"
+                    value={form.phone}
+                    onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
+                  />
+                </div>
+                <div className="flex-1">
+                  <label className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">E-Mail</label>
+                  <input 
+                    type="email" 
+                    className="w-full bg-surface-container-lowest border-2 border-surface-variant/20 rounded-xl px-4 py-4 focus:border-primary focus:ring-0 transition-all font-medium"
+                    placeholder="Ihre E-Mail für die Bestätigung"
+                    value={form.email}
+                    onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -524,26 +532,30 @@ export default function BeantragenPage() {
             </div>
 
             {deliveryType === "family" && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-8 glass-panel rounded-3xl animate-in zoom-in-95 duration-300">
-                <div className="col-span-2">
+              <div className="flex flex-col gap-4 p-8 glass-panel rounded-3xl animate-in zoom-in-95 duration-300">
+                <div>
                   <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Name des Empfängers</label>
                   <input className="form-input w-full p-3" value={form.familyName} onChange={e => setForm(f => ({ ...f, familyName: e.target.value }))} />
                 </div>
-                <div className="col-span-1 flex-[2]">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Straße</label>
-                  <input className="form-input w-full p-3" value={form.familyStreet} onChange={e => setForm(f => ({ ...f, familyStreet: e.target.value }))} />
+                <div className="flex flex-row gap-3">
+                  <div className="flex-[3]">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Straße</label>
+                    <input className="form-input w-full p-3" value={form.familyStreet} onChange={e => setForm(f => ({ ...f, familyStreet: e.target.value }))} />
+                  </div>
+                  <div className="flex-[1]">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Nr.</label>
+                    <input className="form-input w-full p-3" value={form.familyStreetNo} onChange={e => setForm(f => ({ ...f, familyStreetNo: e.target.value }))} />
+                  </div>
                 </div>
-                <div className="col-span-1">
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Nr.</label>
-                  <input className="form-input w-full p-3" value={form.familyStreetNo} onChange={e => setForm(f => ({ ...f, familyStreetNo: e.target.value }))} />
-                </div>
-                <div>
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">PLZ</label>
-                  <input className="form-input w-full p-3" value={form.familyZip} onChange={e => setForm(f => ({ ...f, familyZip: e.target.value }))} />
-                </div>
-                <div>
-                  <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Ort</label>
-                  <input className="form-input w-full p-3" value={form.familyCity} onChange={e => setForm(f => ({ ...f, familyCity: e.target.value }))} />
+                <div className="flex flex-row gap-3">
+                  <div className="flex-[1]">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">PLZ</label>
+                    <input className="form-input w-full p-3" value={form.familyZip} onChange={e => setForm(f => ({ ...f, familyZip: e.target.value }))} />
+                  </div>
+                  <div className="flex-[3]">
+                    <label className="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant mb-2 block">Ort</label>
+                    <input className="form-input w-full p-3" value={form.familyCity} onChange={e => setForm(f => ({ ...f, familyCity: e.target.value }))} />
+                  </div>
                 </div>
               </div>
             )}
