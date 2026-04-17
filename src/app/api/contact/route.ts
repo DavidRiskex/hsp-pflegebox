@@ -46,15 +46,15 @@ export async function POST(request: Request) {
 
       // Send to team
       await transporter.sendMail({
-        from: '"HSP Website" <kontakt@hsp-pflegeshop.de>',
-        to: "kontakt@hsp-pflegeshop.de",
+        from: `"HSP Website" <${process.env.SMTP_USER}>`,
+        to: process.env.ADMIN_EMAIL,
         subject: `Kontaktanfrage von ${name}`,
         html: teamHtml,
       });
 
       // Send confirmation to customer
       await transporter.sendMail({
-        from: '"HSP Pflegeshop" <kontakt@hsp-pflegeshop.de>',
+        from: `"HSP Pflegeshop" <${process.env.SMTP_USER}>`,
         to: email,
         subject: "Bestätigung: Ihre Nachricht an den HSP Pflegeshop",
         html: customerHtml,

@@ -179,8 +179,8 @@ export default function InkontinenzPage() {
                </p>
                <div className="bg-white/60 p-6 rounded-2xl border border-primary/10">
                  <p className="font-bold text-on-surface">HSP Pflegeshop GmbH</p>
-                 <p className="text-on-surface-variant">Pyramidenweg 7</p>
-                 <p className="text-on-surface-variant">25474 Ellerbek</p>
+                 <p className="text-on-surface-variant">Oldesloer Straße 63</p>
+                 <p className="text-on-surface-variant">22457 Hamburg</p>
                </div>
             </div>
           </div>

@@ -239,19 +239,19 @@ export async function generateOrderPdf(
       const base64Data = signatureBase64.split(',')[1] || signatureBase64;
       const signatureImage = await pdfDoc.embedPng(Buffer.from(base64Data, "base64"));
       
-      // Draw signature on the right-hand line (Page 3) - MICRO-ADJUSTED (Refined Left)
+      // Draw signature on the right-hand line (Page 3) - LOWERED to hit the line
       page2.drawImage(signatureImage, {
         x: 300,
-        y: 290,
+        y: 284, // Lowered from 290
         width: 180,
         height: 60,
       });
 
-      // Draw signature also on the last page (Page 5) for provider change - LOWERED slightly
+      // Draw signature also on the last page (Page 5) for provider change - LOWERED to hit the line
       const page4 = pages[4]; // Page 5 (0-indexed)
       page4.drawImage(signatureImage, {
         x: 300,
-        y: 125,
+        y: 118, // Lowered from 125
         width: 180,
         height: 60,
       });

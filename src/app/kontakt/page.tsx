@@ -167,8 +167,8 @@ export default function KontaktPage() {
                 <h3 className="text-sm font-bold uppercase tracking-widest mb-2 text-on-surface-variant">Zentrale</h3>
                 <p className="font-bold text-on-surface mb-1">HSP Pflegeshop GmbH</p>
                 <p className="text-on-surface-variant leading-relaxed">
-                  Pyramidenweg 7<br />
-                  25474 Ellerbek
+                  Oldesloer Straße 63<br />
+                  22457 Hamburg
                 </p>
               </div>
             </div>

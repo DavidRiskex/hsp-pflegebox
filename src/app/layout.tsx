@@ -85,7 +85,7 @@ export default function RootLayout({
                 </div>
                 <div className="flex items-center gap-4 group">
                   <span className="material-symbols-outlined text-[#a6f2d5] transition-transform group-hover:scale-110">call</span>
-                  <p className="text-white">04101/696 10 90</p>
+                  <p className="text-white">040 999 99 62 90</p>
                 </div>
                 <div className="flex items-center gap-4">
                   <span className="material-symbols-outlined text-white">mail</span>

@@ -33,25 +33,52 @@ export async function POST(request: Request) {
       : "";
 
     const customerHtml = `
-      <div style="font-family: Arial, sans-serif; max-width: 640px; margin: 0 auto; color: #1D1D1F;">
-        <div style="background: #1B2B3A; padding: 32px; border-radius: 12px 12px 0 0; text-align: center;">
-          <h1 style="color: white; margin: 0; font-size: 24px;">HSP Pflegebox</h1>
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+          .email-container { font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #1D1D1F; line-height: 1.6; }
+          .header { background: #0d2d23; padding: 40px 20px; text-align: center; border-radius: 16px 16px 0 0; }
+          .logo-text { color: white; margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -1px; }
+          .content { background: #ffffff; padding: 40px; border-radius: 0 0 16px 16px; border: 1px solid #e5e7eb; }
+          .greeting { font-size: 18px; font-weight: 700; margin-bottom: 24px; color: #0d2d23; }
+          .section-title { font-size: 16px; font-weight: 700; margin: 24px 0 12px; color: #1b6b54; text-transform: uppercase; letter-spacing: 1px; }
+          .info-box { background: #f0f7f4; border-left: 4px solid #1b6b54; padding: 20px; border-radius: 8px; margin: 24px 0; }
+          .product-item { padding: 12px 0; border-bottom: 1px solid #f3f4f6; }
+          .footer { padding: 40px 20px; text-align: center; font-size: 13px; color: #6b7280; }
+          .highlight { color: #1b6b54; font-weight: 700; }
+        </style>
+      </head>
+      <body>
+        <div class="email-container">
+          <div class="header">
+            <h1 class="logo-text">HSP <span style="opacity: 0.8">PFLEGESHOP</span></h1>
+          </div>
+          <div class="content">
+            <p class="greeting">Sehr geehrte/r ${form.name},</p>
+            <p>vielen Dank für die Einreichung der Änderung Ihrer Pflegebox. Wir haben Ihre Anfrage erhalten und werden diese umgehend bearbeiten.</p>
+            
+            <div class="info-box">
+              <p style="margin: 0"><strong class="highlight">Wichtiger Hinweis:</strong> Unsere Pflegeboxen versenden wir standardmäßig quartalsweise. Änderungen müssen spätestens <span class="highlight">zwei Wochen</span> vor Quartals- oder Monatsbeginn (bis zum 14. des Vormonats) eingereicht werden.</p>
+            </div>
+
+            <p>Für weitere Fragen oder Wünsche stehen wir Ihnen gerne jederzeit zur Verfügung. Sie erreichen uns per E-Mail unter kontakt@hsp-pflegeshop.de oder telefonisch unter 040 999 99 62 90 (Mo–Fr, 09:00–16:00 Uhr).</p>
+
+            <h3 class="section-title">Ihre neue Produktauswahl:</h3>
+            <div style="margin-top: 10px;">
+              ${selectedNamesHtml}
+              ${bedMatLine ? `<div class="product-item">1x Waschbare Bettschutzeinlagen (MoliCare® Bed Mat)</div>` : ""}
+            </div>
+
+            <p style="margin-top: 40px;">Mit freundlichen Grüßen<br><strong>Ihr HSP-Pflegeshop-Team</strong></p>
+          </div>
+          <div class="footer">
+            <p>© 2024 HSP Pflegeshop | 040 999 99 62 90 | kontakt@hsp-pflegeshop.de</p>
+          </div>
         </div>
-        <div style="background: #ffffff; padding: 40px; border-radius: 0 0 12px 12px; border: 1px solid rgba(27,43,58,0.1);">
-          <p>Sehr geehrte/r ${form.name},</p>
-          <p>Ihre Auswahländerung für die kommende Lieferung der Pflegebox ist bei uns eingegangen.</p>
-          <p>Wir haben Ihr Kundenprofil entsprechend aktualisiert. Bitte beachten Sie unsere Änderungsfristen (spätestens zwei Wochen vor Quartals- bzw. Monatsbeginn), damit die Änderung direkt für die nächste Lieferung greifen kann.</p>
-          <p>Mit freundlichen Grüßen<br><strong>Ihr HSP-Pflegebox-Team</strong></p>
-          
-          <hr style="border: none; border-top: 1px solid rgba(27,43,58,0.1); margin: 32px 0;" />
-          
-          <h3 style="color: #1B2B3A;">Ihre neue Produktauswahl:</h3>
-          <ul style="line-height: 2; padding-left: 20px;">
-            ${selectedNamesHtml}
-            ${bedMatLine}
-          </ul>
-        </div>
-      </div>
+      </body>
+      </html>
     `;
 
     const teamHtml = `
@@ -76,16 +103,18 @@ export async function POST(request: Request) {
         },
       });
 
+      // Send to customer
       await transporter.sendMail({
-        from: '"HSP Pflegebox" <kontakt@hsp-pflegeshop.de>',
+        from: `"HSP Pflegebox" <${process.env.SMTP_USER}>`,
         to: form.email,
-        subject: "Änderung Ihrer Pflegebox – Bestätigung",
+        subject: "Änderungsbestätigung Ihrer HSP-Pflegebox",
         html: customerHtml,
       });
 
+      // Send to admin
       await transporter.sendMail({
-        from: '"HSP Pflegebox Website" <kontakt@hsp-pflegeshop.de>',
-        to: "kontakt@hsp-pflegeshop.de",
+        from: `"HSP Pflegebox Website" <${process.env.SMTP_USER}>`,
+        to: process.env.ADMIN_EMAIL,
         subject: `Änderung Pflegebox: ${form.name}`,
         html: teamHtml,
       });

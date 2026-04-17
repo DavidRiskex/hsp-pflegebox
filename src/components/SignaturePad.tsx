@@ -110,6 +110,9 @@ export default function SignaturePad({ onSave, onClear }: SignaturePadProps) {
           className="w-full h-auto cursor-crosshair touch-none bg-surface-container-lowest rounded-2xl"
         />
         
+        {/* Visual Baseline for the user */}
+        <div className="absolute left-10 right-10 bottom-24 h-[2px] bg-on-surface/10 rounded-full pointer-events-none" />
+        
         {isEmpty && (
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20 flex-col gap-2">
             <span className="material-symbols-outlined text-4xl">edit</span>
