@@ -390,6 +390,25 @@ export default function AendernPage() {
           </button>
         </div>
       </div>
+
+      {/* Floating Checkout Summary for Step 1 */}
+      {step === 1 && currentBudget > 0 && (
+        <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-40 w-[calc(100%-3rem)] max-w-xl animate-in fade-in slide-in-from-bottom-8 duration-500">
+          <div className="bg-on-surface text-surface py-5 px-10 rounded-full shadow-2xl flex items-center justify-between border border-white/10 backdrop-blur-md">
+            <div className="flex flex-col">
+              <span className="text-[10px] uppercase font-bold opacity-60 tracking-widest leading-none mb-1">Aktuelles Budget</span>
+              <span className="text-xl font-extrabold">{currentBudget.toFixed(2).replace('.', ',')} €</span>
+            </div>
+            <button 
+              onClick={next}
+              className="bg-primary-container text-on-primary-container px-8 py-3 rounded-full font-bold flex items-center gap-2 scale-100 hover:scale-105 active:scale-95 transition-all shadow-lg shadow-white/10"
+            >
+              Weiter
+              <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+            </button>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
