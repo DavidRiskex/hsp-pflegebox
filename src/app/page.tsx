@@ -143,116 +143,45 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── BENTO FEATURE GRID ── */}
-      <section className="py-24 px-8 bg-surface-container-low">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl lg:text-5xl font-extrabold tracking-tight mb-4 font-headline">Warum HSP Pflegeshop?</h2>
-            <p className="text-on-surface-variant text-lg">Qualität, Transparenz und echte Fürsorge – in jedem Detail.</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
-            {/* Big card */}
-            <div className="md:col-span-2 md:row-span-2 bg-on-surface text-surface rounded-[2rem] p-10 flex flex-col justify-between relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-primary/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-              <div className="relative z-10">
-                <h3 className="text-3xl font-extrabold mb-5 font-headline">Klarheit im Design</h3>
-                <p className="text-surface/70 text-lg leading-relaxed">Unsere Benutzeroberfläche wurde speziell für einfache Bedienbarkeit entwickelt. Große Texte, klare Symbole und ein linearer Prozess stellen sicher, dass niemand zurückgelassen wird.</p>
-              </div>
-              <div className="relative z-10 rounded-xl overflow-hidden bg-surface/5 border border-surface/10 p-4 mt-8">
-                <Image alt="HSP Logo" src="/logo.jpg" width={400} height={200} className="w-full h-40 object-contain rounded-xl" />
-              </div>
-            </div>
-
-            {/* Eco card */}
-            <div className="md:col-span-2 bg-primary text-on-primary rounded-[2rem] p-10 flex flex-col justify-center shadow-2xl shadow-primary/20 relative overflow-hidden">
-              <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-white/10 rounded-full" />
-              <span className="material-symbols-outlined text-5xl mb-5 opacity-90" style={{ fontVariationSettings: "'FILL' 1" }}>eco</span>
-              <h3 className="text-3xl font-bold mb-3 font-headline">Nachhaltige Pflege</h3>
-              <p className="opacity-85 leading-relaxed">Alle unsere Hilfsmittel werden ethisch bezogen und wir setzen konsequent auf Plastikreduzierung in den Verpackungen.</p>
-            </div>
-
-            {/* Budget card */}
-            <div className="md:col-span-1 bg-primary/10 border-2 border-primary/20 rounded-[2rem] p-8 flex flex-col items-center justify-center text-center">
-              <span className="text-5xl font-extrabold text-primary mb-2 font-headline">42€</span>
-              <p className="text-primary font-bold text-sm uppercase tracking-widest">Monatlich</p>
-              <p className="text-on-surface-variant text-sm mt-2">von der Kasse übernommen</p>
-            </div>
-
-            {/* DSGVO card */}
-            <div className="md:col-span-1 bg-surface-container-lowest border border-surface-variant/15 rounded-[2rem] p-8 flex flex-col items-center justify-center text-center editorial-shadow">
-              <span className="material-symbols-outlined text-primary text-5xl mb-3" style={{ fontVariationSettings: "'FILL' 1" }}>lock</span>
-              <p className="text-on-surface font-bold">DSGVO Konform</p>
-              <p className="text-on-surface-variant text-sm mt-1">Ihre Daten sind sicher</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── EINFACH. SICHER. KOSTENLOS. ── */}
-      <section className="py-28 px-8 bg-surface-container-lowest relative overflow-hidden border-y border-surface-variant/10">
+      {/* ── EINFACH. SICHER. KOSTENLOS. (Combined Benefits Section) ── */}
+      <section className="py-28 px-8 bg-surface-container-low relative overflow-hidden border-y border-surface-variant/10">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent pointer-events-none" />
-        <div className="max-w-4xl mx-auto relative z-10 text-center">
+        <div className="max-w-6xl mx-auto relative z-10 text-center">
           <h2 className="text-4xl lg:text-6xl font-extrabold text-on-surface mb-6 font-headline tracking-tight">
             Einfach. Sicher. Kostenlos.
           </h2>
-          <p className="text-on-surface-variant text-xl leading-relaxed mb-16 max-w-2xl mx-auto">
+          <p className="text-on-surface-variant text-xl leading-relaxed mb-4 max-w-2xl mx-auto">
             Wir freuen uns, Ihnen unsere Pflegebox vorzustellen. Sie erhalten hochwertige Pflegehilfsmittel im Wert von bis zu{" "}
             <span className="text-primary font-bold">42 Euro pro Monat</span>.
           </p>
+          <p className="text-on-surface-variant text-lg leading-relaxed mb-16 max-w-3xl mx-auto">
+            Wir machen es Ihnen leicht, die passenden Pflegehilfsmittel zu finden. Unsere{" "}
+            <span className="text-primary font-semibold">persönliche Telefonberatung</span> hilft Ihnen, die richtige Wahl zu treffen.
+          </p>
 
-          <div className="grid md:grid-cols-2 gap-5 text-left mb-12">
+          <p className="text-tertiary font-bold uppercase tracking-widest text-sm mb-12">Ihre Vorteile auf einen Blick:</p>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 text-left mb-16">
             {[
               {
                 icon: "✨",
                 title: "Maßgeschneidert",
-                body: "Jeder Mensch hat einzigartige Anforderungen. Deshalb passen wir Ihre Box exakt an Ihre Bedürfnisse an. Ob Alltagshilfe oder spezielle Pflege – wir haben die Lösung.",
+                body: "Jeder Mensch hat einzigartige Anforderungen. Deshalb passen wir Ihre Box exakt an Ihre Bedürfnisse an.",
               },
               {
                 icon: "📦",
-                title: "Kostenfreier Versand mit DHL",
-                body: "Der Versand erfolgt völlig kostenfrei und diskret. Konzentrieren Sie sich entspannt auf die Auswahl der Produkte, ohne Sorge vor versteckten Kosten.",
+                title: "Kostenfreier Versand",
+                body: "Der Versand erfolgt völlig kostenfrei und diskret mit DHL. Konzentrieren Sie sich entspannt auf die Produktauswahl.",
               },
-            ].map((item) => (
-              <div key={item.title} className="glass-panel border border-surface-variant/15 rounded-[1.5rem] p-8 hover:border-primary/20 transition-all editorial-shadow">
-                <span className="text-3xl mb-5 block">{item.icon}</span>
-                <h3 className="text-on-surface font-bold text-xl mb-3 font-headline">{item.title}</h3>
-                <p className="text-on-surface-variant leading-relaxed">{item.body}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="bg-primary/5 border border-primary/20 rounded-2xl px-8 py-6 max-w-3xl mx-auto">
-            <p className="text-primary font-bold text-lg leading-relaxed">
-              Nutzen Sie noch heute Ihren gesetzlichen Anspruch und erleben Sie, wie einfach erstklassige Unterstützung sein kann.
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* ── IHRE VORTEILE AUF EINEN BLICK ── */}
-      <section className="py-28 px-8 bg-surface-container-low relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent pointer-events-none" />
-        <div className="max-w-5xl mx-auto relative z-10 text-center">
-          <h2 className="text-4xl lg:text-5xl font-extrabold text-on-surface mb-6 font-headline tracking-tight">
-            Ihre Vorteile auf einen <span className="text-primary italic">Blick</span>
-          </h2>
-          <p className="text-on-surface-variant text-lg leading-relaxed mb-4 max-w-3xl mx-auto">
-            Wir machen es Ihnen leicht, die passenden Pflegehilfsmittel zu finden. Unsere{" "}
-            <span className="text-primary font-semibold">persönliche Telefonberatung</span> hilft Ihnen, die richtige Wahl zu treffen. Sie erhalten hochwertige, geprüfte Produkte und einen umfassenden Service, der Ihnen Zeit und Mühe spart.
-          </p>
-          <p className="text-tertiary font-bold uppercase tracking-widest text-sm mb-12">Was Sie von uns erwarten können:</p>
-
-          <div className="grid md:grid-cols-2 gap-5 text-left">
-            {[
               {
                 icon: "📞",
-                title: "Individuelle Telefonberatung",
-                body: "Wir finden gemeinsam die besten Lösungen für Ihre Bedürfnisse. Persönlich, kompetent und verständlich.",
+                title: "Persönliche Beratung",
+                body: "Wir finden gemeinsam die besten Lösungen. Persönlich, kompetent und verständlich per Telefon.",
               },
               {
                 icon: "🛡️",
                 title: "Geprüfte Qualität",
-                body: "Verlassen Sie sich auf hochwertige Markenprodukte von HARTMANN, die strengen Qualitätsstandards entsprechen.",
+                body: "Verlassen Sie sich auf hochwertige Markenprodukte von HARTMANN nach strengen Qualitätsstandards.",
               },
               {
                 icon: "💛",
@@ -260,20 +189,38 @@ export default function Home() {
                 body: "Wir kümmern uns um alles – von der Beantragung bei der Kasse bis zur pünktlichen Lieferung an Ihre Haustür.",
               },
               {
-                icon: "🕐",
-                title: "Zuverlässige Erreichbarkeit",
-                body: "Wir sind für Sie da, wann immer Sie uns brauchen. Kurze Wartezeiten und direkte Ansprechpartner.",
+                icon: "eco",
+                title: "Nachhaltige Pflege",
+                body: "Unsere Hilfsmittel werden ethisch bezogen. Wir setzen konsequent auf Plastikreduzierung in der Verpackung.",
+                isMaterialSymbol: true
               },
             ].map((item) => (
               <div key={item.title} className="bg-surface-container-lowest border border-surface-variant/15 rounded-[1.5rem] p-8 hover:border-primary/30 transition-all group editorial-shadow hover:-translate-y-1">
-                <span className="text-3xl mb-5 block">{item.icon}</span>
+                {item.isMaterialSymbol ? (
+                   <span className="material-symbols-outlined text-4xl mb-5 block text-primary" style={{ fontVariationSettings: "'FILL' 1" }}>{item.icon}</span>
+                ) : (
+                   <span className="text-4xl mb-5 block">{item.icon}</span>
+                )}
                 <h3 className="text-on-surface font-bold text-xl mb-3 font-headline group-hover:text-primary transition-colors">{item.title}</h3>
                 <p className="text-on-surface-variant leading-relaxed">{item.body}</p>
               </div>
             ))}
           </div>
+
+          <div className="bg-primary/5 border border-primary/20 rounded-2xl px-8 py-6 max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-8 text-left">
+             <div className="text-6xl font-extrabold text-primary font-headline hidden sm:block">42€</div>
+             <div>
+                <p className="text-primary font-bold text-xl leading-relaxed mb-2">
+                  100% Kostenübernahme durch Ihre Pflegekasse
+                </p>
+                <p className="text-on-surface-variant font-medium">
+                  Nutzen Sie noch heute Ihren gesetzlichen Anspruch und erleben Sie, wie einfach erstklassige Unterstützung sein kann.
+                </p>
+             </div>
+          </div>
         </div>
       </section>
+
 
       {/* ── FINAL CTA ── */}
       <section className="py-32 px-8 bg-surface relative overflow-hidden">
