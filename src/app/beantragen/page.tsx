@@ -295,7 +295,13 @@ export default function BeantragenPage() {
                           <div className="bg-surface-container-lowest rounded-[1.8rem] p-6 h-full flex flex-col">
                             <div className="h-40 rounded-2xl overflow-hidden mb-6 relative bg-surface-container-low">
                               {p.img ? (
-                                <Image src={p.img} alt={p.category} fill className="object-contain p-4" />
+                                <Image 
+                                  src={p.img} 
+                                  alt={p.category} 
+                                  fill 
+                                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                  className="object-contain p-4" 
+                                />
                               ) : (
                                 <div className="w-full h-full flex items-center justify-center text-4xl">📦</div>
                               )}
@@ -364,7 +370,13 @@ export default function BeantragenPage() {
             <div className="glass-card rounded-[2.5rem] p-1 bg-surface-container-low mb-12">
               <div className="bg-surface-container-lowest rounded-[2.3rem] p-8 flex flex-col md:flex-row items-center gap-8">
                 <div className="w-48 h-48 bg-surface-container-low rounded-2xl overflow-hidden relative">
-                  <Image src="/products/molicare-textile.png" alt="MoliCare Bed Mat Textile" fill className="object-contain p-4" />
+                  <Image 
+                    src="/products/molicare-textile.png" 
+                    alt="MoliCare Bed Mat Textile" 
+                    fill 
+                    sizes="200px"
+                    className="object-contain p-4" 
+                  />
                 </div>
                 <div className="flex-1">
                   <h4 className="text-xs font-bold text-primary uppercase tracking-widest mb-1">HARTMANN PREMIUM</h4>

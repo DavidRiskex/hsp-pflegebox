@@ -167,14 +167,32 @@ export default function ProduktePage() {
                     {p.secondImg ? (
                       <div className="flex w-full h-full p-4 gap-2">
                         <div className="relative flex-1">
-                          <Image src={p.img} alt={p.imgAlt} fill className="object-contain p-2" />
+                          <Image 
+                            src={p.img} 
+                            alt={p.imgAlt} 
+                            fill 
+                            sizes="(max-width: 768px) 50vw, 25vw"
+                            className="object-contain p-2" 
+                          />
                         </div>
                         <div className="relative flex-1">
-                          <Image src={p.secondImg} alt="Sekundärbild" fill className="object-contain p-2" />
+                          <Image 
+                            src={p.secondImg} 
+                            alt="Sekundärbild" 
+                            fill 
+                            sizes="(max-width: 768px) 50vw, 25vw"
+                            className="object-contain p-2" 
+                          />
                         </div>
                       </div>
                     ) : (
-                      <Image src={p.img} alt={p.imgAlt} fill className="object-contain p-8 group-hover:scale-110 transition-transform duration-700" />
+                      <Image 
+                        src={p.img} 
+                        alt={p.imgAlt} 
+                        fill 
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        className="object-contain p-8 group-hover:scale-110 transition-transform duration-700" 
+                      />
                     )}
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 text-white">
                        <span className="material-symbols-outlined text-3xl bg-primary/40 p-3 rounded-full backdrop-blur-sm">zoom_in</span>
@@ -238,6 +256,7 @@ export default function ProduktePage() {
               src={selectedImg} 
               alt="Vergrößerte Ansicht" 
               fill 
+              sizes="100vw"
               className="object-contain animate-in zoom-in-95 duration-500"
               priority
             />

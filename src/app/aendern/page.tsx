@@ -184,7 +184,17 @@ export default function AendernPage() {
                       <div key={p.id} className={`glass-card rounded-[2rem] p-1 border-2 transition-all duration-300 ${isSelected ? "border-primary bg-primary/5" : "border-transparent"}`}>
                         <div className="bg-white rounded-[1.8rem] p-6 h-full flex flex-col">
                           <div className="h-32 rounded-2xl overflow-hidden mb-4 relative bg-surface-container-low">
-                            {p.img ? <Image src={p.img} alt={p.category} fill className="object-contain p-4" /> : <div className="w-full h-full flex items-center justify-center text-3xl">📦</div>}
+                            {p.img ? (
+                              <Image 
+                                src={p.img} 
+                                alt={p.category} 
+                                fill 
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                className="object-contain p-4" 
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-3xl">📦</div>
+                            )}
                           </div>
                           <h4 className="text-[10px] font-bold text-primary uppercase tracking-tighter mb-1">{p.brandLine}</h4>
                           <h3 className="text-lg font-extrabold text-on-surface mb-4 font-headline leading-tight">{p.category}</h3>
