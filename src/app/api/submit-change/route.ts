@@ -95,24 +95,39 @@ export async function POST(request: Request) {
 
     if (process.env.RESEND_API_KEY) {
       const fullName = `${form.firstName} ${form.lastName}`.trim();
+      const adminEmail = process.env.ADMIN_EMAIL || 'hsppflegetest@gmail.com';
+
+      console.log(`Versuche E-Mails (Änderung) via Resend zu senden (Admin: ${adminEmail}, Kunde: ${form.email})...`);
 
       // Send to customer
-      await resend.emails.send({
+      const customerRes = await resend.emails.send({
         from: 'HSP Pflegebox <onboarding@resend.dev>',
         to: form.email,
         subject: "Änderungsbestätigung Ihrer HSP-Pflegebox",
         html: customerHtml,
       });
 
+      if (customerRes.error) {
+        console.error("❌ Resend Fehler (Kunde - Änderung):", customerRes.error);
+      } else {
+        console.log("✅ Resend Erfolg (Kunde - Änderung):", customerRes.data);
+      }
+
       // Send to admin
-      await resend.emails.send({
+      const adminRes = await resend.emails.send({
         from: 'HSP Website <onboarding@resend.dev>',
-        to: process.env.ADMIN_EMAIL || 'hsppflegetest@gmail.com',
+        to: adminEmail,
         subject: `Änderung Pflegebox: ${fullName}`,
         html: teamHtml,
       });
       
-      console.log("✅ Emails (Change) via Resend gesendet.");
+      if (adminRes.error) {
+        console.error("❌ Resend Fehler (Admin - Änderung):", adminRes.error);
+      } else {
+        console.log("✅ Resend Erfolg (Admin - Änderung):", adminRes.data);
+      }
+    } else {
+      console.error("❌ RESEND_API_KEY fehlt in den Umgebungsvariablen!");
     }
 
     return NextResponse.json({ success: true }, { status: 200 });
