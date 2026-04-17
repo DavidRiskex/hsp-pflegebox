@@ -128,31 +128,8 @@ export default function BeantragenPage() {
     finally { setIsSubmitting(false); }
   };
 
-  const handleDownloadPdf = async () => {
-    try {
-      const response = await fetch("/api/download-pdf", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ form, cart, wantsBedMat, signature, intervalType, hasProvider }),
-      });
-      if (!response.ok) throw new Error("Network response was not ok");
-      
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `Antrag_Pflegeshop_${form.name || "Kunde"}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(url);
-    } catch (e) {
-      console.error("PDF Download fehlgeschlagen", e);
-      alert("Das PDF konnte leider nicht generiert werden.");
-    }
-  };
-
   const budgetPct = (currentBudget / TOTAL_BUDGET) * 100;
+  const isBudgetExceeded = currentBudget > TOTAL_BUDGET;
 
   if (submitted) {
     return (
@@ -163,17 +140,16 @@ export default function BeantragenPage() {
             <div className="w-24 h-24 bg-primary-container rounded-full flex items-center justify-center mx-auto mb-8 editorial-shadow">
               <span className="material-symbols-outlined text-primary text-5xl">check_circle</span>
             </div>
-            <h2 className="text-4xl lg:text-5xl font-extrabold mb-6 tracking-tight font-headline">Antrag eingereicht!</h2>
+            <h2 className="text-4xl lg:text-5xl font-extrabold mb-6 tracking-tight font-headline text-on-surface">Antrag eingereicht!</h2>
             <p className="text-on-surface-variant text-xl mb-12 max-w-2xl mx-auto">
-              Vielen Dank, <strong>{form.name}</strong>. Wir haben Ihre Daten erhalten und kümmern uns nun um die Beantragung bei der Pflegekasse.
+              Vielen Dank, <strong>{form.name}</strong>. Wir haben Ihre Daten erhalten und kümmern uns nun um die Beantragung bei der Pflegekasse. Wir haben Ihnen eine Bestätigung per E-Mail gesendet.
             </p>
-            <button 
-              onClick={handleDownloadPdf}
-              className="bg-primary text-on-primary px-10 py-5 rounded-xl font-bold text-lg shadow-lg hover:shadow-primary/20 transition-all flex items-center gap-3 mx-auto"
+            <Link 
+              href="/"
+              className="bg-primary text-on-primary px-10 py-5 rounded-xl font-bold text-lg shadow-lg hover:shadow-primary/20 transition-all inline-block"
             >
-              <span className="material-symbols-outlined">description</span>
-              Bestellbogen als PDF laden
-            </button>
+              Zurück zur Startseite
+            </Link>
           </div>
         </div>
       </main>

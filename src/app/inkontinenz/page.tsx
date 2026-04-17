@@ -35,14 +35,39 @@ export default function InkontinenzPage() {
   const [submitted, setSubmitted] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [formData, setFormData] = useState({ name: "", phone: "", timeSlot: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.name || !formData.phone || !file) {
       alert("Bitte füllen Sie alle Pflichtfelder aus und laden Sie ein Rezept hoch.");
       return;
     }
-    setSubmitted(true);
+    
+    setIsSubmitting(true);
+    try {
+      const data = new FormData();
+      data.append("name", formData.name);
+      data.append("phone", formData.phone);
+      data.append("timeSlot", formData.timeSlot);
+      data.append("file", file);
+
+      const res = await fetch("/api/submit-inkontinenz", {
+        method: "POST",
+        body: data,
+      });
+
+      if (res.ok) {
+        setSubmitted(true);
+      } else {
+        alert("Fehler beim Senden. Bitte versuchen Sie es später erneut.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Ein Fehler ist aufgetreten.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (submitted) {
@@ -144,10 +169,11 @@ export default function InkontinenzPage() {
                   </div>
 
                   <button 
+                    disabled={isSubmitting}
                     type="submit"
-                    className="w-full bg-primary text-on-primary py-6 rounded-2xl font-bold text-2xl shadow-2xl hover:shadow-primary/30 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-4"
+                    className="w-full bg-primary text-on-primary py-6 rounded-2xl font-bold text-2xl shadow-2xl hover:shadow-primary/30 transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-4 disabled:opacity-50"
                   >
-                    Anfrage & Beratung starten
+                    {isSubmitting ? "Wird gesendet..." : "Anfrage & Beratung starten"}
                     <span className="material-symbols-outlined">arrow_forward</span>
                   </button>
                 </form>
