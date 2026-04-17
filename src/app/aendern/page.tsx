@@ -16,6 +16,7 @@ export default function AendernPage() {
   const [wantsBedMat, setWantsBedMat] = useState<boolean | null>(null);
   const [signature, setSignature] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [form, setForm] = useState({
     firstName: "", lastName: "", dob: "", phone: "", email: "",
