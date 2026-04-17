@@ -113,22 +113,30 @@ export async function POST(request: Request) {
       const adminEmail = process.env.ADMIN_EMAIL || 'hsppflegetest@gmail.com';
 
       // Send to customer
-      await transporter.sendMail({
-        from: `"HSP Pflegebox" <${process.env.SMTP_USER}>`,
-        to: form.email,
-        subject: "Änderungsbestätigung Ihrer HSP-Pflegebox",
-        html: customerHtml,
-      });
+      try {
+        await transporter.sendMail({
+          from: `"HSP Pflegebox" <${process.env.SMTP_USER}>`,
+          to: form.email,
+          subject: "Änderungsbestätigung Ihrer HSP-Pflegebox",
+          html: customerHtml,
+        });
+        console.log(`✅ Änderungsbestätigung an Kunde (${form.email}) gesendet.`);
+      } catch (e: any) {
+        console.error(`❌ Fehler beim Senden (Kunde-Änderung) an ${form.email}:`, e.message);
+      }
 
       // Send to admin
-      await transporter.sendMail({
-        from: `"HSP Pflegebox Website" <${process.env.SMTP_USER}>`,
-        to: adminEmail,
-        subject: `Änderung Pflegebox: ${form.firstName} ${form.lastName}`,
-        html: teamHtml,
-      });
-      
-      console.log("✅ Emails (Change) via SMTP gesendet.");
+      try {
+        await transporter.sendMail({
+          from: `"HSP Pflegebox Website" <${process.env.SMTP_USER}>`,
+          to: adminEmail,
+          subject: `Änderung Pflegebox: ${form.firstName} ${form.lastName}`,
+          html: teamHtml,
+        });
+        console.log(`✅ Änderungs-Benachrichtigung an Admin (${adminEmail}) gesendet.`);
+      } catch (e: any) {
+        console.error(`❌ Fehler beim Senden (Admin-Änderung) an ${adminEmail}:`, e.message);
+      }
     }
 
     return NextResponse.json({ success: true }, { status: 200 });
