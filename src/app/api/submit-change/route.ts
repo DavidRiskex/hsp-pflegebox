@@ -1,3 +1,4 @@
+import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { PRODUCTS } from "../../../lib/products";
 import { generateOrderPdf } from "../../../lib/pdfGenerator";
@@ -114,8 +115,6 @@ export async function POST(request: Request) {
       
       console.log("✅ Emails (Change) via Resend gesendet.");
     }
-
-    return NextResponse.json({ success: true }, { status: 200 });
 
     return NextResponse.json({ success: true }, { status: 200 });
   } catch (err) {

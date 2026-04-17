@@ -1,3 +1,4 @@
+import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { PRODUCTS, TOTAL_BUDGET } from "../../../lib/products";
 import { generateOrderPdf } from "../../../lib/pdfGenerator";
